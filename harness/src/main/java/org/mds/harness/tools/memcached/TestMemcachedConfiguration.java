@@ -1,0 +1,18 @@
+package org.mds.harness.tools.memcached;
+
+import org.mds.harness.common.perf.PerfConfig;
+
+public class TestMemcachedConfiguration extends PerfConfig{
+    String memcachedAddress="127.0.0.1:11211";
+    int itemCount=300000;
+    int bulkCount=100;
+    int connectionPoolSize=10;
+    int keyLen=10;
+    int dataLen=10;
+    boolean assureSet=false;
+    int getterCount=1;
+    int setterCount=1;
+    int getterType=0;
+    boolean useBucket=true;
+    boolean asyncSet=true;
+}
