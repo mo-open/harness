@@ -15,4 +15,5 @@ public class TestMemcachedConfiguration extends PerfConfig{
     int getterType=0;
     boolean useBucket=true;
     boolean asyncSet=true;
+    boolean enableCache=true;
 }

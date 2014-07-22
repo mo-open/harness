@@ -129,10 +129,12 @@ public class TestXMemcachedPerf {
                 new MemcacheConfig(conf.memcachedAddress)
                         .setConnections(conf.connectionPoolSize),
                 conf.getterCount);
+        MemcacheCache memcacheCache = new MemcacheCache(new CacheConfig().setSyncThreads(4));
         final MemcacheGetProcessor getProcessor = MemcacheGetProcessor.newBuilder()
                 .setBufferSize(1024 * 16)
                 .setProcessorType(conf.getterType == 0 ? MemcacheProcessor.ProcessorType.DISRUPTOR : MemcacheSetProcessor.ProcessorType.QUEUE)
                 .setBatchSize(conf.batchSize).setGetters(getters)
+                .setCache(conf.enableCache ? memcacheCache : null)
                 .build();
         final AtomicLong counter = new AtomicLong();
         new PerfTester("Http Sync Perftest", conf, new PerfTester.Task() {

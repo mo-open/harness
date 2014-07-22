@@ -77,10 +77,12 @@ public class TestMemcachedPerf {
 
     public void runGetter(final TestMemcachedConfiguration conf) {
         final SpyMemcacheGetter[] getters = SpyMemcacheGetter.buildGetters(new MemcacheConfig(conf.memcachedAddress), conf.getterCount);
+        MemcacheCache memcacheCache = new MemcacheCache(new CacheConfig().setSyncThreads(4));
         final MemcacheGetProcessor getProcessor = MemcacheGetProcessor.newBuilder()
                 .setBufferSize(1024 * 16)
                 .setProcessorType(conf.getterType == 0 ? MemcacheProcessor.ProcessorType.DISRUPTOR : MemcacheGetProcessor.ProcessorType.QUEUE)
                 .setBatchSize(conf.batchSize).setGetters(getters)
+                .setCache(conf.enableCache ? memcacheCache : null)
                 .build();
         final AtomicLong counter = new AtomicLong();
         new PerfTester("Http Sync Perftest", conf, new PerfTester.Task() {
@@ -115,7 +117,8 @@ public class TestMemcachedPerf {
                 .setAsync(conf.asyncSet)
                 .setBufferSize(1024 * 16)
                 .setProcessorType(conf.getterType == 0 ? MemcacheProcessor.ProcessorType.DISRUPTOR : MemcacheSetProcessor.ProcessorType.QUEUE)
-                .setSetters(setters).build();
+                .setSetters(setters)
+                .build();
         final AtomicLong counter = new AtomicLong();
         new PerfTester("Http Sync Perftest", conf, new PerfTester.Task() {
             @Override
