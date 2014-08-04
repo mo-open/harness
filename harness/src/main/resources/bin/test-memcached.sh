@@ -1,6 +1,6 @@
 #!/bin/sh
 
-JAVA_OPTS=" -Xms256m -Xmx512m -Xss256k -XX:MaxNewSize=64m"
+JAVA_OPTS=" -Xms256m -Xmx1024m -Xss256k -XX:MaxNewSize=128m"
 JAVA_OPTS=" -XX:+UseParNewGC -XX:ParallelGCThreads=8 -XX:+UseConcMarkSweepGC $JAVA_OPTS"
 JAVA_VERSION="1.6"
 
