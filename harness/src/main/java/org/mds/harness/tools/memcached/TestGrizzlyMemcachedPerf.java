@@ -47,7 +47,7 @@ public class TestGrizzlyMemcachedPerf {
             public int run(PerfConfig configuration, int index) {
                 try {
                     int vIndex = index % conf.itemCount;
-                    memcachedClient.set(KEY_PREFIX + vIndex, DATA_PREFIX + vIndex, 100000, false);
+                    memcachedClient.set(KEY_PREFIX + vIndex, (DATA_PREFIX + vIndex).getBytes(), 100000, false);
                 } catch (Exception ex) {
 
                 }
@@ -63,7 +63,7 @@ public class TestGrizzlyMemcachedPerf {
             public int run(PerfConfig configuration, int index) {
                 try {
                     int vIndex = index % conf.itemCount;
-                    memcachedClient.set(KEY_PREFIX + vIndex, DATA_PREFIX + vIndex, 100000, true);
+                    memcachedClient.set(KEY_PREFIX + vIndex, (DATA_PREFIX + vIndex).getBytes(), 100000, true);
                 } catch (Exception ex) {
 
                 }
@@ -112,7 +112,7 @@ public class TestGrizzlyMemcachedPerf {
             public int run(PerfConfig configuration, List<Long> indexes) {
                 Map<String, Object> keyValues = new HashMap();
                 for (Long index : indexes) {
-                    keyValues.put(KEY_PREFIX + index % conf.itemCount, DATA_PREFIX + index);
+                    keyValues.put(KEY_PREFIX + index % conf.itemCount, (DATA_PREFIX + index).getBytes());
                 }
                 try {
                     memcachedClient.setMulti(keyValues, 100000);
