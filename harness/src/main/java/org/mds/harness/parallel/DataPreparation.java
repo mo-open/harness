@@ -1,9 +1,8 @@
 package org.mds.harness.parallel;
 
 import net.rubyeye.xmemcached.MemcachedClient;
-import org.mds.hprocessor.memcache.MemcacheClientUtils;
-import org.mds.hprocessor.memcache.MemcacheConfig;
-import org.mds.hprocessor.processor.Processor;
+import org.mds.hprocessor.memcache.utils.MemcacheClientUtils;
+import org.mds.hprocessor.memcache.utils.MemcacheConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -9,6 +9,8 @@ import org.mds.hprocessor.memcache.*;
 import org.mds.harness.common.perf.PerfConfig;
 import org.mds.harness.common.perf.PerfTester;
 import org.mds.harness.common.runner.RunnerHelper;
+import org.mds.hprocessor.memcache.utils.MemcacheClientUtils;
+import org.mds.hprocessor.memcache.utils.MemcacheConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,9 +127,9 @@ public class TestXMemcachedPerf {
     }
 
     public void runGetter(final TestMemcachedConfiguration conf) {
-        final XMemcacheGetter[] getters = XMemcacheGetter.buildGetters(
-                new MemcacheConfig(conf.memcachedAddress)
-                        .setConnections(conf.connectionPoolSize),
+        final XMemCache[] getters = XMemCache.build(
+                MemcacheClientUtils.createXMemcachedClient(
+                        new MemcacheConfig(conf.memcachedAddress).setConnections(conf.connectionPoolSize)),
                 conf.getterCount);
         MemcacheCache memcacheCache = new MemcacheCache(new CacheConfig().setSyncThreads(4));
         final MemcacheGetProcessor getProcessor = MemcacheGetProcessor.newBuilder()
@@ -163,10 +165,10 @@ public class TestXMemcachedPerf {
     }
 
     public void runSetter(final TestMemcachedConfiguration conf) {
-        final XMemcacheSetter[] setters = XMemcacheSetter.buildSetters(
-                new MemcacheConfig(conf.memcachedAddress)
-                        .setConnections(conf.connectionPoolSize),
-                conf.setterCount);
+        final XMemCache[] setters = XMemCache.build(
+                MemcacheClientUtils.createXMemcachedClient(
+                        new MemcacheConfig(conf.memcachedAddress).setConnections(conf.connectionPoolSize)),
+                conf.getterCount);
         final MemcacheSetProcessor setProcessor = MemcacheSetProcessor.newBuilder()
                 .setBufferSize(1024 * 16)
                 .setProcessorType(conf.getterType == 0 ? MemcacheProcessor.ProcessorType.DISRUPTOR : MemcacheSetProcessor.ProcessorType.QUEUE)
@@ -179,17 +181,12 @@ public class TestXMemcachedPerf {
                 setProcessor.set(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex,
                         new MemcacheSetProcessor.SetCallback() {
                             @Override
-                            public void complete(String key) {
+                            public void complete(String key, Object value) {
                                 counter.incrementAndGet();
                             }
 
                             @Override
-                            public void fail(String key) {
-
-                            }
-
-                            @Override
-                            public void timeout(String key) {
+                            public void timeout(String key, Object value) {
                                 log.info("set timeout");
                             }
                         });

@@ -7,7 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.mds.hprocessor.memcache.*;
 import org.mds.harness.common.perf.PerfConfig;
 import org.mds.harness.common.perf.PerfTester;
-import org.mds.hprocessor.processor.DisruptorBatchProcessor;
+import org.mds.hprocessor.memcache.utils.MemcacheClientUtils;
+import org.mds.hprocessor.memcache.utils.MemcacheConfig;
 import org.mds.harness.common.runner.RunnerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,10 @@ public class TestMemcachedPerf {
     }
 
     public void runGetter(final TestMemcachedConfiguration conf) {
-        final SpyMemcacheGetter[] getters = SpyMemcacheGetter.buildGetters(new MemcacheConfig(conf.memcachedAddress), conf.getterCount);
+        final SpyMemCache[] getters = SpyMemCache.build(
+                MemcacheClientUtils.createSpyMemcachedClients(
+                        new MemcacheConfig(conf.memcachedAddress),
+                        conf.getterCount));
         MemcacheCache memcacheCache = new MemcacheCache(new CacheConfig().setSyncThreads(4));
         final MemcacheGetProcessor getProcessor = MemcacheGetProcessor.newBuilder()
                 .setBufferSize(1024 * 16)
@@ -111,8 +115,10 @@ public class TestMemcachedPerf {
     }
 
     public void runSetter(final TestMemcachedConfiguration conf) {
-        final SpyMemcacheSetter[] setters = SpyMemcacheSetter.buildSetters(new MemcacheConfig(conf.memcachedAddress),
-                conf.setterCount);
+        final SpyMemCache[] setters = SpyMemCache.build(
+                MemcacheClientUtils.createSpyMemcachedClients(
+                        new MemcacheConfig(conf.memcachedAddress),
+                        conf.getterCount));
         final MemcacheSetProcessor setProcessor = MemcacheSetProcessor.newBuilder()
                 .setAsync(conf.asyncSet)
                 .setBufferSize(1024 * 16)
@@ -127,17 +133,12 @@ public class TestMemcachedPerf {
                 setProcessor.set(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex,
                         new MemcacheSetProcessor.SetCallback() {
                             @Override
-                            public void complete(String key) {
+                            public void complete(String key, Object value) {
                                 counter.incrementAndGet();
                             }
 
                             @Override
-                            public void fail(String key) {
-
-                            }
-
-                            @Override
-                            public void timeout(String key) {
+                            public void timeout(String key, Object value) {
                                 log.info("get timeout");
                             }
                         });
