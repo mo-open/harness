@@ -4,6 +4,7 @@ import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.command.BinaryCommandFactory;
 import net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator;
+import net.rubyeye.xmemcached.transcoders.SerializingTranscoder;
 import org.apache.commons.lang3.StringUtils;
 import org.mds.hprocessor.memcache.*;
 import org.mds.harness.common.perf.PerfConfig;
@@ -30,6 +31,9 @@ public class TestXMemcachedPerf {
         builder.setSessionLocator(new KetamaMemcachedSessionLocator());
         builder.setCommandFactory(new BinaryCommandFactory());
         builder.setConnectionPoolSize(configuration.connectionPoolSize);
+        SerializingTranscoder transcoder = new SerializingTranscoder();
+        transcoder.setCompressionThreshold(configuration.compressionThreshold);
+        builder.setTranscoder(transcoder);
         builder.setConnectTimeout(3000);
         builder.setFailureMode(false);
         builder.setOpTimeout(1000);

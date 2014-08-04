@@ -7,6 +7,7 @@ public class TestMemcachedConfiguration extends PerfConfig{
     int itemCount=300000;
     int bulkCount=100;
     int connectionPoolSize=10;
+    int compressionThreshold=1024;
     int keyLen=10;
     int dataLen=10;
     boolean assureSet=false;

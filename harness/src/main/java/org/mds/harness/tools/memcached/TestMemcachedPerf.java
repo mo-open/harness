@@ -1,7 +1,5 @@
 package org.mds.harness.tools.memcached;
 
-import net.rubyeye.xmemcached.utils.AddrUtil;
-import net.spy.memcached.BinaryConnectionFactory;
 import net.spy.memcached.MemcachedClient;
 import org.apache.commons.lang3.StringUtils;
 import org.mds.hprocessor.memcache.*;
@@ -27,7 +25,9 @@ public class TestMemcachedPerf {
     MemcachedClient memcachedClient;
 
     public void beforeRun(final TestMemcachedConfiguration conf) throws IOException {
-        memcachedClient = new MemcachedClient(new BinaryConnectionFactory(), AddrUtil.getAddresses(conf.memcachedAddress));
+        memcachedClient = MemcacheClientUtils.createSpyMemcachedClient(
+                new MemcacheConfig(conf.memcachedAddress)
+                        .setCompressionThreshold(conf.compressionThreshold));
         KEY_PREFIX = KEY_PREFIX + StringUtils.repeat("1", conf.keyLen);
         DATA_PREFIX = DATA_PREFIX + StringUtils.repeat("1", conf.dataLen);
     }
