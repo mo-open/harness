@@ -32,6 +32,7 @@ public class TestXMemcachedPerf {
         builder.setCommandFactory(new BinaryCommandFactory());
         builder.setConnectionPoolSize(configuration.connectionPoolSize);
         SerializingTranscoder transcoder = new SerializingTranscoder();
+
         transcoder.setCompressionThreshold(configuration.compressionThreshold);
         builder.setTranscoder(transcoder);
         builder.setConnectTimeout(3000);

@@ -25,7 +25,7 @@ public class TestMeetupClientPerf {
 
     public void beforeRun(final TestMemcachedConfiguration conf) {
         SockIOPool pool = SockIOPool.getInstance();
-        pool.setServers(new String[]{"192.168.205.101:11211"});
+        pool.setServers(new String[]{conf.memcachedAddress});
         pool.setInitConn(5);
         pool.setMinConn(5);
         pool.setMaxConn(50);
