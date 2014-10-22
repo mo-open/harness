@@ -26,7 +26,8 @@ public class NativeDriverTest {
         final DBCollection collection = db.getCollection("test");
         if (configuration.dropFirst) {
             collection.drop();
-            collection.createIndex(new BasicDBObject("type", 1).append("dateTime",1));
+            collection.createIndex(new BasicDBObject("type", 1).append("dateTime", 1));
+            collection.createIndex(new BasicDBObject("dateTime", 1).append("expireAfterSecs", configuration.expireTime));
         }
         final WriteConcern writeConcern = new WriteConcern(configuration.writeMode);
         new PerfTester("Mongo test set1", configuration, new PerfTester.Task() {
@@ -36,7 +37,7 @@ public class NativeDriverTest {
                 String item = type + "_dataItem_random_custom_" + random.nextInt(configuration.dataItemCount);
                 BasicDBObject doc = new BasicDBObject("type", type).
                         append("item", item).
-                        append("itemHash",item.hashCode()).
+                        append("itemHash", item.hashCode()).
                         append("dateTime", System.currentTimeMillis()).
                         append("info", "Information");
 
@@ -53,7 +54,8 @@ public class NativeDriverTest {
         final DBCollection collection = db.getCollection("test");
         if (configuration.dropFirst) {
             collection.drop();
-            collection.createIndex(new BasicDBObject("type", 1).append("dateTime",1));
+            collection.createIndex(new BasicDBObject("type", 1).append("dateTime", 1));
+            collection.createIndex(new BasicDBObject("dateTime", 1).append("expireAfterSecs", configuration.expireTime));
         }
         final WriteConcern writeConcern = new WriteConcern(configuration.writeMode);
         new PerfTester("Mongo multiple set", configuration, new PerfTester.BatchTask() {
@@ -66,7 +68,7 @@ public class NativeDriverTest {
                     String item = type + "_dataItem_random_custom_" + random.nextInt(configuration.dataItemCount);
                     BasicDBObject doc = new BasicDBObject("type", type).
                             append("item", item).
-                            append("itemHash",item.hashCode()).
+                            append("itemHash", item.hashCode()).
                             append("dateTime", System.currentTimeMillis()).
                             append("info", "Information");
                     docs.add(doc);

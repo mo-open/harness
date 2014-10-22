@@ -21,5 +21,6 @@ public class Configuration extends PerfConfig {
     //node: -1; 0: unack; 1: ack
     int writeMode = -1;
     int dataDuration = 1800000;
+    int expireTime=30;
     int groupCount = 100;
 }
