@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -38,7 +39,7 @@ public class NativeDriverTest {
                 BasicDBObject doc = new BasicDBObject("type", type).
                         append("item", item).
                         append("itemHash", item.hashCode()).
-                        append("dateTime", System.currentTimeMillis()).
+                        append("dateTime", new Date()).
                         append("info", "Information");
 
                 collection.insert(doc, writeConcern);
@@ -69,7 +70,7 @@ public class NativeDriverTest {
                     BasicDBObject doc = new BasicDBObject("type", type).
                             append("item", item).
                             append("itemHash", item.hashCode()).
-                            append("dateTime", System.currentTimeMillis()).
+                            append("dateTime", new Date()).
                             append("info", "Information");
                     docs.add(doc);
                 }
