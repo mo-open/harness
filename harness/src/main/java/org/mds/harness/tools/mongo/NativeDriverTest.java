@@ -92,7 +92,7 @@ public class NativeDriverTest {
                         .append("itemHash", new BasicDBObject("$mod", new Object[]{configuration.groupCount, random.nextInt(configuration.groupCount)}))
                         .append("dateTime", new BasicDBObject("$gt", System.currentTimeMillis() - configuration.dataDuration));
                 DBCursor cursor = collection.find(doc);
-                return cursor.toArray().size();
+                return 1;
             }
         }).run();
     }
