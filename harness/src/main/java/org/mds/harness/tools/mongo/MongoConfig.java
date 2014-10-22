@@ -95,7 +95,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Bean
     public MongoTemplate mongoTemplate() throws Exception {
         MongoTemplate template = super.mongoTemplate();
-        template.setWriteConcern(WriteConcern.SAFE);
+        template.setWriteConcern(WriteConcern.NONE);
         template.setWriteResultChecking(WriteResultChecking.EXCEPTION);
         return template;
     }

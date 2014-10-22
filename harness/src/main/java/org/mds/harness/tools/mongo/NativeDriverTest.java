@@ -1,14 +1,15 @@
 package org.mds.harness.tools.mongo;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 import org.mds.harness.common.perf.PerfConfig;
 import org.mds.harness.common.perf.PerfTester;
 import org.mds.harness.common.runner.RunnerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Dongsong
@@ -16,62 +17,78 @@ import org.slf4j.LoggerFactory;
 public class NativeDriverTest {
     protected final static Logger log = LoggerFactory.getLogger(NativeDriverTest.class);
 
-    public void set1Run(Configuration configuration) throws Exception {
+    private static Random random = new Random();
+
+    public void runSet1(final Configuration configuration) throws Exception {
         final MongoConfig mongoConfig = new MongoConfig(configuration);
         final MongoClient mongoClient = mongoConfig.mongo();
         final DB db = mongoClient.getDB(configuration.databaseName);
         final DBCollection collection = db.getCollection("test");
         collection.drop();
-        collection.createIndex(new BasicDBObject("count", 1));
-        new PerfTester("Http Sync Perftest", configuration, new PerfTester.Task() {
+        collection.createIndex(new BasicDBObject("item", 1));
+        collection.createIndex(new BasicDBObject("dateTime", 1));
+        final WriteConcern writeConcern = new WriteConcern(configuration.writeMode);
+        new PerfTester("Mongo test set1", configuration, new PerfTester.Task() {
             @Override
-            public int run(PerfConfig configuration, int index) {
-                BasicDBObject doc = new BasicDBObject("name", "MongoDB").
-                        append("type", "database").
-                        append("count", index).
-                        append("info", new BasicDBObject("x", index + 10).append("y", 102));
+            public int run(PerfConfig config, int index) {
+                String type = "type_" + random.nextInt(configuration.dataTypeCount);
+                String item = type + "_dataItem_random_custom_" + random.nextInt(configuration.dataItemCount);
+                BasicDBObject doc = new BasicDBObject("type", type).
+                        append("item", item).
+                        append("dateTime", System.currentTimeMillis()).
+                        append("info", "Information");
 
-                collection.insert(doc);
+                collection.insert(doc, writeConcern);
                 return 1;
             }
         }).run();
     }
 
-    public void set2Test(final Configuration conf) throws Exception {
-        final MongoConfig mongoConfig = new MongoConfig(conf);
+    public void runSet2(final Configuration configuration) throws Exception {
+        final MongoConfig mongoConfig = new MongoConfig(configuration);
         final MongoClient mongoClient = mongoConfig.mongo();
-        DB db = mongoClient.getDB(conf.databaseName);
-        DBCollection collection = db.getCollection("test");
+        DB db = mongoClient.getDB(configuration.databaseName);
+        final DBCollection collection = db.getCollection("test");
         collection.drop();
-        collection.createIndex(new BasicDBObject("count", 1));
-        new PerfTester("Http Sync Perftest", conf, new PerfTester.Task() {
-            @Override
-            public int run(PerfConfig configuration, int index) {
-                DB db = mongoClient.getDB(conf.databaseName);
-                DBCollection collection = db.getCollection("test");
-                BasicDBObject doc = new BasicDBObject("name", "MongoDB").
-                        append("type", "database").
-                        append("count", index).
-                        append("info", new BasicDBObject("x", index + 10).append("y", 102));
+        collection.createIndex(new BasicDBObject("item", 1));
+        collection.createIndex(new BasicDBObject("dateTime", 1));
+        final WriteConcern writeConcern = new WriteConcern(configuration.writeMode);
+        new PerfTester("Mongo multiple set", configuration, new PerfTester.BatchTask() {
 
-                collection.insert(doc);
-                return 1;
+            @Override
+            public int run(PerfConfig config, List<Long> indexes) {
+                List<DBObject> docs = new ArrayList();
+                for (Long index : indexes) {
+                    String type = "type_" + random.nextInt(configuration.dataTypeCount);
+                    String item = type + "_dataItem_random_custom_" + random.nextInt(configuration.dataItemCount);
+                    BasicDBObject doc = new BasicDBObject("type", type).
+                            append("item", item).
+                            append("dateTime", System.currentTimeMillis()).
+                            append("info", "Information");
+                    docs.add(doc);
+                }
+                collection.insert(docs, writeConcern);
+                return docs.size();
             }
         }).run();
     }
 
-    public void getTest(Configuration conf) throws Exception {
-        final MongoConfig mongoConfig = new MongoConfig(conf);
+    public void runGet(final Configuration configuration) throws Exception {
+        final MongoConfig mongoConfig = new MongoConfig(configuration);
         final MongoClient mongoClient = mongoConfig.mongo();
-        final DB db = mongoClient.getDB(conf.databaseName);
+        final DB db = mongoClient.getDB(configuration.databaseName);
         final DBCollection collection = db.getCollection("test");
 
-        new PerfTester("Http Sync Perftest", conf, new PerfTester.Task() {
+        new PerfTester("Mongo query", configuration, new PerfTester.Task() {
             @Override
-            public int run(PerfConfig configuration, int index) {
-                BasicDBObject doc = new BasicDBObject("count", index);
-                collection.findOne(doc);
-                return 1;
+            public int run(PerfConfig conf, int index) {
+                String type = "type_" + random.nextInt(configuration.dataTypeCount);
+
+                BasicDBObject doc = new BasicDBObject("type", type)
+                        .append("item", new BasicDBObject("$mod", new Object[]{configuration.groupCount, random.nextInt(configuration.groupCount)}))
+                        .append("dateTime", new BasicDBObject("$gt", System.currentTimeMillis() - configuration.dataDuration));
+                DBCursor cursor = collection.find(doc);
+                return cursor.toArray().size();
             }
         }).run();
     }
