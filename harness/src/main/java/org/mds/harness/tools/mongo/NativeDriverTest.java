@@ -36,6 +36,7 @@ public class NativeDriverTest {
                 String item = type + "_dataItem_random_custom_" + random.nextInt(configuration.dataItemCount);
                 BasicDBObject doc = new BasicDBObject("type", type).
                         append("item", item).
+                        append("itemHash",item.hashCode()).
                         append("dateTime", System.currentTimeMillis()).
                         append("info", "Information");
 
@@ -65,6 +66,7 @@ public class NativeDriverTest {
                     String item = type + "_dataItem_random_custom_" + random.nextInt(configuration.dataItemCount);
                     BasicDBObject doc = new BasicDBObject("type", type).
                             append("item", item).
+                            append("itemHash",item.hashCode()).
                             append("dateTime", System.currentTimeMillis()).
                             append("info", "Information");
                     docs.add(doc);
@@ -87,7 +89,7 @@ public class NativeDriverTest {
                 String type = "type_" + random.nextInt(configuration.dataTypeCount);
 
                 BasicDBObject doc = new BasicDBObject("type", type)
-                        .append("item", new BasicDBObject("$mod", new Object[]{configuration.groupCount, random.nextInt(configuration.groupCount)}))
+                        .append("itemHash", new BasicDBObject("$mod", new Object[]{configuration.groupCount, random.nextInt(configuration.groupCount)}))
                         .append("dateTime", new BasicDBObject("$gt", System.currentTimeMillis() - configuration.dataDuration));
                 DBCursor cursor = collection.find(doc);
                 return cursor.toArray().size();
