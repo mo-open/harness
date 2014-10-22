@@ -28,7 +28,8 @@ public class NativeDriverTest {
         if (configuration.dropFirst) {
             collection.drop();
             collection.createIndex(new BasicDBObject("type", 1).append("dateTime", 1));
-            collection.createIndex(new BasicDBObject("dateTime", 1).append("expireAfterSecs", configuration.expireTime));
+            collection.createIndex(new BasicDBObject("dateTime", 1),
+                    new BasicDBObject("expireAfterSecs", configuration.expireTime));
         }
         final WriteConcern writeConcern = new WriteConcern(configuration.writeMode);
         new PerfTester("Mongo test set1", configuration, new PerfTester.Task() {
@@ -53,10 +54,12 @@ public class NativeDriverTest {
         final MongoClient mongoClient = mongoConfig.mongo();
         DB db = mongoClient.getDB(configuration.databaseName);
         final DBCollection collection = db.getCollection("test");
+
         if (configuration.dropFirst) {
             collection.drop();
             collection.createIndex(new BasicDBObject("type", 1).append("dateTime", 1));
-            collection.createIndex(new BasicDBObject("dateTime", 1).append("expireAfterSecs", configuration.expireTime));
+            collection.createIndex(new BasicDBObject("dateTime", 1),
+                    new BasicDBObject("expireAfterSecs", configuration.expireTime));
         }
         final WriteConcern writeConcern = new WriteConcern(configuration.writeMode);
         new PerfTester("Mongo multiple set", configuration, new PerfTester.BatchTask() {
