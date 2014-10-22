@@ -38,7 +38,7 @@ public class NativeDriverTest {
                 String item = type + "_dataItem_random_custom_" + random.nextInt(configuration.dataItemCount);
                 BasicDBObject doc = new BasicDBObject("type", type).
                         append("item", item).
-                        append("itemHash", item.hashCode()).
+                        append("itemHash", Math.abs(item.hashCode())).
                         append("dateTime", new Date()).
                         append("info", "Information");
 
@@ -69,7 +69,7 @@ public class NativeDriverTest {
                     String item = type + "_dataItem_random_custom_" + random.nextInt(configuration.dataItemCount);
                     BasicDBObject doc = new BasicDBObject("type", type).
                             append("item", item).
-                            append("itemHash", item.hashCode()).
+                            append("itemHash", Math.abs(item.hashCode())).
                             append("dateTime", new Date()).
                             append("info", "Information");
                     docs.add(doc);
