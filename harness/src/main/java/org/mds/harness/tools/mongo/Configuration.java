@@ -15,6 +15,7 @@ public class Configuration extends PerfConfig {
 
     String password = null;
 
+    boolean dropFirst = true;
     int dataTypeCount = 50;
     int dataItemCount = 100000;
     //node: -1; 0: unack; 1: ack
