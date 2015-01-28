@@ -95,10 +95,10 @@ import static com.lmax.disruptor.RingBuffer.createMultiProducer;
  */
 public final class ThreePublisherToOneProcessorSequencedThroughputTest extends AbstractPerfTestQueueVsDisruptor
 {
-    private static final int NUM_PUBLISHERS = 20;
+    private static final int NUM_PUBLISHERS = 2;
     private static final int WORKERS=5;
-    private static final int BUFFER_SIZE = 1024 * 1024;
-    private static final long ITERATIONS = 1000L * 1000L * 1L;
+    private static final int BUFFER_SIZE = 1024 * 64;
+    private static final long ITERATIONS = 1000L * 1000L * 10L;
     private static final long INTEVAL=1L;
     private final ExecutorService executor = Executors.newFixedThreadPool(NUM_PUBLISHERS + 1);
     private final CyclicBarrier cyclicBarrier = new CyclicBarrier(NUM_PUBLISHERS + 1);

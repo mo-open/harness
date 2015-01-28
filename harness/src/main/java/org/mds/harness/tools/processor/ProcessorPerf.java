@@ -101,7 +101,27 @@ public class ProcessorPerf {
         }).run(counter);
     }
 
-    public void runDBProcessor(final ProcessorConfiguration conf) {
+    public void runDBProcessor1(final ProcessorConfiguration conf) {
+        final AtomicLong counter = new AtomicLong();
+
+        final DisruptorBatchProcessor<Integer> disruptorProcessor =
+                DisruptorBatchProcessor.<Integer>newBuilder()
+                        .setSingleHandler(new ProcessorHandler<Integer>() {
+                            @Override
+                            public void process(Integer object) {
+                                counter.incrementAndGet();
+                            }
+                        }).build();
+        new PerfTester("Disruptor processor", conf, new PerfTester.Task() {
+            @Override
+            public int run(PerfConfig configuration, int index) {
+                disruptorProcessor.submit(index);
+                return 1;
+            }
+        }).run(counter);
+    }
+
+    public void runDBProcessor2(final ProcessorConfiguration conf) {
         final AtomicLong counter = new AtomicLong();
 
         final DisruptorBatchProcessor<Integer> disruptorProcessor =

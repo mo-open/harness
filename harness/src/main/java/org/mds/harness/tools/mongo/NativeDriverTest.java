@@ -94,10 +94,11 @@ public class NativeDriverTest {
             public int run(PerfConfig conf, int index) {
                 String type = "type_" + random.nextInt(configuration.dataTypeCount);
 
-                BasicDBObject doc = new BasicDBObject("type", type)
+                BasicDBObject doc = new BasicDBObject()
                         .append("itemHash", new BasicDBObject("$mod", new Object[]{configuration.groupCount, random.nextInt(configuration.groupCount)}))
                         .append("dateTime", new BasicDBObject("$gt", System.currentTimeMillis() - configuration.dataDuration));
-                DBCursor cursor = collection.find(doc);
+                DBCursor cursor = collection.find(doc,
+                        new BasicDBObject("item", 1).append("dateTime", 1));
                 return 1;
             }
         }).run();

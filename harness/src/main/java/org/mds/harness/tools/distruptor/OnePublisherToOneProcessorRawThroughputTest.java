@@ -69,7 +69,7 @@ import java.util.concurrent.Executors;
 public final class OnePublisherToOneProcessorRawThroughputTest extends AbstractPerfTestQueueVsDisruptor
 {
     private static final int BUFFER_SIZE = 1024 * 64;
-    private static final long ITERATIONS = 1000L * 1000L * 200L;
+    private static final long ITERATIONS = 1000L * 1000L * 20L;
     private final ExecutorService executor = Executors.newSingleThreadExecutor(DaemonThreadFactory.INSTANCE);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

@@ -49,7 +49,7 @@ import static com.lmax.disruptor.RingBuffer.createMultiProducer;
 public final class TwoPublisherToTwoProcessorWorkProcessorThroughputTest extends AbstractPerfTestQueueVsDisruptor {
     private static final int NUM_PUBLISHERS = 2;
     private static final int WORKERS = 5;
-    private static final int BUFFER_SIZE = 1024 * 1024;
+    private static final int BUFFER_SIZE = 1024 * 64;
     private static final long ITERATIONS = 1000L * 100L * 1L;
     private static final long INTERVAL = 1L;
     private final ExecutorService executor = Executors.newFixedThreadPool(NUM_PUBLISHERS + 2);

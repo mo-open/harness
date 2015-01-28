@@ -19,7 +19,7 @@ import org.junit.Assert;
 
 public abstract class AbstractPerfTestQueueVsDisruptor
 {
-    public static final int RUNS = 10;
+    public static final int RUNS = 3;
 
     protected void testImplementations()
         throws Exception

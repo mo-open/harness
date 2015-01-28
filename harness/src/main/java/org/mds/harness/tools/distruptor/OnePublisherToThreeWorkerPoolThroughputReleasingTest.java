@@ -29,7 +29,7 @@ import static junit.framework.Assert.assertEquals;
 
 public final class OnePublisherToThreeWorkerPoolThroughputReleasingTest
         extends AbstractPerfTestQueueVsDisruptor {
-    private static final int NUM_WORKERS = 100;
+    private static final int NUM_WORKERS = 3;
     private static final int BUFFER_SIZE = 1024 * 1024;
     private static final long ITERATIONS = 1000L * 100 * 1L;
     private static final long INTERVAL = 1L;
