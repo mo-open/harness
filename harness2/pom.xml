@@ -8,7 +8,7 @@
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tools-harness</artifactId>
+    <artifactId>tools-harness2</artifactId>
 
     <packaging>jar</packaging>
     <dependencies>
@@ -47,7 +47,7 @@
 
         <dependency>
             <groupId>org.mds</groupId>
-            <artifactId>harness-common</artifactId>
+            <artifactId>harness-common2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mds</groupId>

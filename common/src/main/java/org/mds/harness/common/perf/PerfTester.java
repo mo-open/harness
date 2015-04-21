@@ -345,4 +345,8 @@ public class PerfTester {
             }
         }
     }
+
+    private void run4(final int batchSize) {
+
+    }
 }
