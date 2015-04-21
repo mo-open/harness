@@ -1,6 +1,6 @@
-package com.thistech.harness;
+package org.mds.harness2;
 
-import org.mds.harness.utils.TestHelper;
+import org.mds.harness2.utils.TestHelper;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;

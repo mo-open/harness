@@ -1,9 +1,9 @@
-package com.thistech.harness;
+package org.mds.harness2;
 
 import javolution.text.Cursor;
 import javolution.text.Text;
 import org.apache.http.client.utils.URIUtils;
-import org.mds.harness.tools.httpbench.PlayListUtils;
+import org.mds.harness2.tools.httpbench.PlayListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;

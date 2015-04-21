@@ -147,7 +147,7 @@ public class HttpBench {
         final AtomicLong finishedCounter = new AtomicLong();
         final DisruptorProcessor<EventValue> processor = DisruptorProcessor.<EventValue>newBuilder()
                 .setBufferSize(conf.bufferSize)
-                .addNext(conf.parseThreads, value -> {
+                .addNext(conf.parseThreads, (EventValue value) -> {
                     try {
                         if (conf.parse) {
                             if (conf.returnStream) {

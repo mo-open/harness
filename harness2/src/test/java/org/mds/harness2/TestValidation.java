@@ -1,5 +1,5 @@
 
-package com.thistech.harness;
+package org.mds.harness2;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

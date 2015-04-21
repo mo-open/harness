@@ -1,4 +1,4 @@
-package com.thistech.harness;
+package org.mds.harness2;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonMethod;
