@@ -21,6 +21,11 @@ public class TestMapDBConfig extends PerfConfig {
     boolean mmapFile;
     int asyncWriteDelayMs=0;
     int asyncWriteQueueSize=32000;
+    long expireMaxSize=10000;
+    double expireStoreSize=0.1;
+    int btreeNodeSize=5;
+    boolean useLock;
+    long queueSize;
 
 
     public enum StoreType {
