@@ -13,8 +13,35 @@ import java.util.stream.Collectors;
  */
 public class TestMapDBHelper {
 
+
+
     private static DBMaker createDBMaker(TestMapDBConfig config) {
-        return null;
+        DBMaker dbMaker = null;
+        switch (TestMapDBConfig.StoreType.valueOf(config.storeType.toUpperCase())) {
+            case FILE:
+                dbMaker = DBMaker.newFileDB(new File(config.storeFile));
+                break;
+            case TEMPFILE:
+                dbMaker = DBMaker.newTempFileDB();
+                break;
+            case HEAP:
+                dbMaker = DBMaker.newHeapDB();
+                break;
+            case MEM:
+                dbMaker = DBMaker.newMemoryDB();
+                break;
+            case DMEM:
+                dbMaker = DBMaker.newMemoryDirectDB();
+                break;
+            default:
+                dbMaker = DBMaker.newMemoryDirectDB();
+        }
+        configDBMaker(dbMaker, config);
+        return dbMaker;
+    }
+
+    private static void configDBMaker(DBMaker dbMaker, TestMapDBConfig config) {
+
     }
 
     private static void configHTreeMap(DB.HTreeMapMaker dbMaker, TestMapDBConfig config) {
@@ -38,6 +65,7 @@ public class TestMapDBHelper {
         DBMaker dbMaker = createDBMaker(config);
         DB.HTreeMapMaker mapMaker = dbMaker.make().createHashMap("HTreeMap");
         configHTreeMap(mapMaker, config);
+
         return mapMaker.make();
     }
 

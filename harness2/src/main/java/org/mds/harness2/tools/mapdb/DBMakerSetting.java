@@ -11,7 +11,6 @@ interface Setting<T> {
     public void set(T dbMaker, TestMapDBConfig config);
 }
 
-
 enum DBMakerSetting implements Setting<DBMaker> {
     GLOBAL((dbMaker, config) ->
             dbMaker.mmapFileEnableIfSupported()
