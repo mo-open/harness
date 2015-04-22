@@ -10,5 +10,5 @@ do
    test_classpath="${test_classpath}:${libFile}"
 done
 
-java -classpath ${test_classpath} ${JAVA_OPTS} org.mds.harness.tools.reactor.ReactorPerf $*
+java -classpath ${test_classpath} ${JAVA_OPTS} org.mds.harness2.tools.reactor.ReactorPerf $*
 

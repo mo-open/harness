@@ -52,7 +52,6 @@ public class ThreadTestExecutor extends TestExecutor {
                 calculator.calculate(i);
                 for (int j = 0; j < configuration.threadCount; j++) {
                     tasks.add(executorService.submit(() -> {
-
                         int size = 0;
                         List<Long> indexes = null;
                         if (task instanceof PerfTester.BatchTask) {

@@ -10,5 +10,5 @@ do
    test_classpath="${test_classpath}:${libFile}"
 done
 
-java -classpath ${test_classpath} ${JAVA_OPTS} org.mds.harness.tools.mongo.SpringDataTest $*
+java -classpath ${test_classpath} ${JAVA_OPTS} org.mds.harness2.tools.mongo.SpringDataTest $*
 

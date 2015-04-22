@@ -11,5 +11,5 @@ do
 done
 
 java -classpath ${test_classpath} ${JAVA_OPTS} \
-org.mds.harness.tools.redis.TestJedisPerf $*
+org.mds.harness2.tools.redis.TestJedisPerf $*
 
