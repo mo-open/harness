@@ -1,12 +1,12 @@
-threadCount: 100
-totalCount: 100000
+threadCount: 20
+totalCount: 1000000
 testRounds: 3
 interval: 0
 
 #hashMap,hashSet,treeMap,treeSet,Queue,cQueue,stack
 runs: hashMap
 
-maxSizeInG: 0.1
+maxSizeInG: 0.5
 
 #file,tempfile,heap,mem,dmem
 storeType: dmem
@@ -16,7 +16,7 @@ valueCompress: false
 asyncWriteDelayMs: 0
 asyncWriteQueueSize: 32000
 expireMaxSize: 10000
-expireStoreSize: 0.1
+expireStoreSize: 0.5
 btreeNodeSize: 5
 useLock: false
 queueSize: 10000
@@ -25,7 +25,8 @@ valueLen: 20
 opMode: 1
 
 dbMaker:
-  - "global"
+  - "global,disable_trans"
+  - "global,disable_trans,enable_async"
 #  - "global,disable_trans,delete_file,enable_async,disable_cache"
 #  - "global,disable_trans,delete_file,enable_async,default_cache,disable_commit_sync,enable_snapshot"
 #  - "global,disable_trans,delete_file,enable_async,default_cache,disable_commit_sync,enable_compress,enable_snapshot"

@@ -12,11 +12,14 @@ interface Setting<T> {
 }
 
 enum DBMakerSetting implements Setting<DBMaker> {
-    GLOBAL((dbMaker, config) ->
-            dbMaker.mmapFileEnableIfSupported()
-                    .sizeLimit(config.maxSizeInG)
-                    .closeOnJvmShutdown()
-    ),
+    GLOBAL((dbMaker, config) -> {
+        TestMapDBConfig.StoreType storeType = TestMapDBConfig.StoreType.valueOf(config.storeType.toUpperCase());
+        if (storeType == TestMapDBConfig.StoreType.FILE ||
+                storeType == TestMapDBConfig.StoreType.TEMPFILE)
+            dbMaker.mmapFileEnableIfSupported();
+        dbMaker.sizeLimit(config.maxSizeInG)
+                .closeOnJvmShutdown();
+    }),
     DISABLE_TRANS((dbMaker, config) -> dbMaker.transactionDisable()),
     DELETE_FILE((dbMaker, config) -> dbMaker.deleteFilesAfterClose()),
     ENABLE_ASYNC((dbMaker, config) -> dbMaker.asyncWriteEnable()
@@ -55,9 +58,9 @@ enum HTreeMapSetting implements Setting<DB.HTreeMapMaker> {
     EXPIRE_STORE((dbMaker, config) -> dbMaker.expireStoreSize(config.expireStoreSize)),
     VALUE_COMPRESS((dbMaker, config) -> {
         if (config.valueCompress)
-            dbMaker.valueSerializer(new Serializer.CompressionWrapper<>(Serializer.STRING));
+            dbMaker.valueSerializer(new Serializer.CompressionWrapper<>(Serializer.STRING_ASCII));
         else
-            dbMaker.valueSerializer(Serializer.STRING);
+            dbMaker.valueSerializer(Serializer.STRING_ASCII);
     });
 
     private Setting<DB.HTreeMapMaker> setting;
@@ -78,9 +81,9 @@ enum HTreeSetSetting implements Setting<DB.HTreeSetMaker> {
     EXPIRE_STORE((dbMaker, config) -> dbMaker.expireStoreSize(config.expireStoreSize)),
     VALUE_COMPRESS((dbMaker, config) -> {
         if (config.valueCompress)
-            dbMaker.serializer(new Serializer.CompressionWrapper<>(Serializer.STRING));
+            dbMaker.serializer(new Serializer.CompressionWrapper<>(Serializer.STRING_ASCII));
         else
-            dbMaker.serializer(Serializer.STRING);
+            dbMaker.serializer(Serializer.CHAR_ARRAY);
     });
 
     private Setting<DB.HTreeSetMaker> setting;
@@ -101,7 +104,7 @@ enum BTreeMapSetting implements Setting<DB.BTreeMapMaker> {
     NODES((dbMaker, config) -> dbMaker.nodeSize(config.btreeNodeSize)),
     OUTSIDE((dbMaker, config) -> dbMaker.valuesOutsideNodesEnable()),
     IGNORE_DUP((dbMaker, config) -> dbMaker.pumpIgnoreDuplicates()),
-    VALUE_COMPRESS((dbMaker, config) -> dbMaker.valueSerializer(new Serializer.CompressionWrapper<>(Serializer.STRING)));
+    VALUE_COMPRESS((dbMaker, config) -> dbMaker.valueSerializer(new Serializer.CompressionWrapper<>(Serializer.STRING_ASCII)));
 
     private Setting<DB.BTreeMapMaker> setting;
 

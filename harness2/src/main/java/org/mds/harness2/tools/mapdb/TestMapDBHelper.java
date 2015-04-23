@@ -76,7 +76,7 @@ public class TestMapDBHelper {
     }
 
 
-    public static Stream<HTreeMap<String, String>> createHTreeMap(TestMapDBConfig config) {
+    public static <T>Stream<HTreeMap<String, T>> createHTreeMap(TestMapDBConfig config) {
         final AtomicInteger index = new AtomicInteger(0);
         return Stream.of(config.dbMaker)
                 .map(dbMakerSetting -> createDBMaker(config, dbMakerSetting))
@@ -87,7 +87,7 @@ public class TestMapDBHelper {
                 })).map(DB.HTreeMapMaker::make);
     }
 
-    public static Stream<Set<String>> createHTreeSet(TestMapDBConfig config) {
+    public static <T>Stream<Set<T>> createHTreeSet(TestMapDBConfig config) {
         final AtomicInteger index = new AtomicInteger(0);
         return Stream.of(config.dbMaker)
                 .map(dbMakerSetting -> createDBMaker(config, dbMakerSetting))
@@ -98,7 +98,7 @@ public class TestMapDBHelper {
                 })).map(DB.HTreeSetMaker::make);
     }
 
-    public static Stream<BTreeMap<String, String>> createBTreeMap(TestMapDBConfig config) {
+    public static <T>Stream<BTreeMap<String, T>> createBTreeMap(TestMapDBConfig config) {
         final AtomicInteger index = new AtomicInteger(0);
         return Stream.of(config.dbMaker)
                 .map(dbMakerSetting -> createDBMaker(config, dbMakerSetting))
@@ -109,7 +109,7 @@ public class TestMapDBHelper {
                 })).map(DB.BTreeMapMaker::make);
     }
 
-    public static Stream<Set<String>> createBTreeSet(TestMapDBConfig config) {
+    public static <T>Stream<Set<T>> createBTreeSet(TestMapDBConfig config) {
         final AtomicInteger index = new AtomicInteger(0);
         return Stream.of(config.dbMaker)
                 .map(dbMakerSetting -> createDBMaker(config, dbMakerSetting))
@@ -124,14 +124,14 @@ public class TestMapDBHelper {
         final AtomicInteger index = new AtomicInteger(0);
         return Stream.of(config.dbMaker)
                 .map(dbMakerSetting -> createDBMaker(config, dbMakerSetting))
-                .map(dbMaker -> dbMaker.make().createQueue("Queue" + index.incrementAndGet(), Serializer.STRING, config.useLock));
+                .map(dbMaker -> dbMaker.make().createQueue("Queue" + index.incrementAndGet(), Serializer.STRING_ASCII, config.useLock));
     }
 
     public static Stream<BlockingQueue<String>> createCQueue(TestMapDBConfig config) {
         final AtomicInteger index = new AtomicInteger(0);
         return Stream.of(config.dbMaker)
                 .map(dbMakerSetting -> createDBMaker(config, dbMakerSetting))
-                .map(dbMaker -> dbMaker.make().createCircularQueue("CQueue" + index.incrementAndGet(), Serializer.STRING, config.queueSize));
+                .map(dbMaker -> dbMaker.make().createCircularQueue("CQueue" + index.incrementAndGet(), Serializer.STRING_ASCII, config.queueSize));
     }
 
     public static Stream<BlockingQueue<String>> createStack(TestMapDBConfig config) {

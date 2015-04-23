@@ -19,7 +19,7 @@ public class PerfTester<T extends PerfTester.Task> {
     private BatchTask batchTask;
 
     public interface Task<T> {
-        int run(PerfConfig configuration, T index);
+        int run(PerfConfig configuration, T index) throws Exception;
     }
 
     @FunctionalInterface
