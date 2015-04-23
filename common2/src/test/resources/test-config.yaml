@@ -2,3 +2,9 @@ field_1: 1
 field_2: 2
 field_3: 3
 field_4: 4
+field_5:
+  - 1
+  - 2
+subConfig:
+  f1: 1
+  f2: 2

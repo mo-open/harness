@@ -17,6 +17,13 @@ public class ConfigurationHelperTest {
         public String field_2;
         public String field_3;
         public int field_4;
+        public int[] field_5;
+        public SubConfig subConfig;
+    }
+
+    static public class SubConfig {
+        public int f1;
+        public String f2;
     }
 
     @Test
@@ -42,11 +49,15 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testLoadYAMLConfiguration() throws Exception {
-        TestConfiguration configuration = (TestConfiguration) ConfigurationHelper.loadConfiguration("test-config.yaml", null, TestConfiguration.class);
+        TestConfiguration configuration = (TestConfiguration) ConfigurationHelper.loadYAMLConfiguration("test-config.yaml", null, TestConfiguration.class);
         assertEquals(configuration.field_1, 1);
         assertEquals(configuration.field_2, "2");
         assertEquals(configuration.field_3, "3");
         assertEquals(configuration.field_4, 4);
+        assertEquals(configuration.field_5[0],1);
+        assertEquals(configuration.field_5[1],2);
+        assertEquals(configuration.subConfig.f1,1);
+        assertEquals(configuration.subConfig.f2,"2");
     }
 
     @Test
@@ -54,11 +65,15 @@ public class ConfigurationHelperTest {
         Properties inputProperties = new Properties();
         inputProperties.setProperty("field_1", "9");
 
-        TestConfiguration configuration = (TestConfiguration) ConfigurationHelper.loadConfiguration("test-config.yaml", inputProperties, TestConfiguration.class);
+        TestConfiguration configuration = (TestConfiguration) ConfigurationHelper.loadYAMLConfiguration("test-config.yaml", inputProperties, TestConfiguration.class);
         assertEquals(configuration.field_1, 9);
         assertEquals(configuration.field_2, "2");
         assertEquals(configuration.field_3, "3");
         assertEquals(configuration.field_4, 4);
+        assertEquals(configuration.field_5[0],1);
+        assertEquals(configuration.field_5[1],2);
+        assertEquals(configuration.subConfig.f1,1);
+        assertEquals(configuration.subConfig.f2,"2");
     }
 
     @Test

@@ -17,6 +17,7 @@ enum DBMakerSetting implements Setting<DBMaker> {
                     .sizeLimit(config.maxSizeInG)
                     .closeOnJvmShutdown()
     ),
+    DISABLE_TRANS((dbMaker, config) -> dbMaker.transactionDisable()),
     DELETE_FILE((dbMaker, config) -> dbMaker.deleteFilesAfterClose()),
     ENABLE_ASYNC((dbMaker, config) -> dbMaker.asyncWriteEnable()
             .asyncWriteFlushDelay(config.asyncWriteDelayMs)
@@ -34,7 +35,6 @@ enum DBMakerSetting implements Setting<DBMaker> {
     DISABLE_COMMIT_SYNC((dbMaker, config) -> dbMaker.commitFileSyncDisable()),
     ENABLE_COMPRESS((dbMaker, config) -> dbMaker.compressionEnable()),
     ENABLE_SNAPSHOT((dbMaker, config) -> dbMaker.snapshotEnable());
-
 
     private Setting<DBMaker> setting;
 

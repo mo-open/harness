@@ -3,18 +3,60 @@ totalCount: 100000
 testRounds: 3
 interval: 0
 
+#hashMap,hashSet,treeMap,treeSet,Queue,cQueue,stack
+runs: hashMap
+
 maxSizeInG: 0.1
 
-#file,heap,mem,dmem
+#file,tempfile,heap,mem,dmem
 storeType: dmem
+storeFile: /tmp/mapdb.test
+cacheSize: -1
+valueCompress: false
+asyncWriteDelayMs: 0
+asyncWriteQueueSize: 32000
+expireMaxSize: 10000
+expireStoreSize: 0.1
+btreeNodeSize: 5
+useLock: false
+queueSize: 10000
+valueLen: 20
+#0:remove,1:set, other: mixed
+opMode: 1
 
-dbmaker:
+dbMaker:
   - "global"
-  - "global,delete_file,enable_async,disable_cache"
-  - "global,delete_file,enable_async,default_cache,disable_commit_sync,enable_snapshot"
-  - "global,delete_file,enable_async,default_cache,disable_commit_sync,enable_compress,enable_snapshot"
-  - "global,delete_file,enable_async,hard_cache,disable_commit_sync,enable_compress,enable_snapshot"
+#  - "global,disable_trans,delete_file,enable_async,disable_cache"
+#  - "global,disable_trans,delete_file,enable_async,default_cache,disable_commit_sync,enable_snapshot"
+#  - "global,disable_trans,delete_file,enable_async,default_cache,disable_commit_sync,enable_compress,enable_snapshot"
+#  - "global,disable_trans,delete_file,enable_async,hard_cache,disable_commit_sync,enable_compress,enable_snapshot"
+#  - "global,delete_file,enable_async,hard_cache,disable_commit_sync,enable_compress,enable_snapshot"
   #- "global,delete_file,enable_async,lru_cache,disable_commit_sync,enable_compress,enable_snapshot"
   #- "global,delete_file,enable_async,soft_cache,disable_commit_sync,enable_compress,enable_snapshot"
   #- "global,delete_file,enable_async,weak_cache,disable_commit_sync,enable_compress,enable_snapshot"
 
+htreeMap:
+  - "global"
+#  - "global,enable_counter"
+#  - "global,value_compress"
+#  - "global,expire_max"
+#  - "global,expire_store"
+
+htreeSet:
+  - "enable_counter"
+  - "value_compress"
+  - "expire_max"
+  - "expire_store"
+
+btreeMap:
+  - "global"
+  - "global,enable_counter"
+  - "global,value_compress"
+  - "global,nodes"
+  - "global,nodes,outside,ignore_dup"
+
+btreeSet:
+  - "enable_counter"
+  - "value_compress"
+  - "nodes"
+  - "nodes,ignore_dup"
