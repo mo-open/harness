@@ -1,0 +1,4 @@
+threadCount: 100
+totalCount: 100000
+testRounds: 3
+interval: 0

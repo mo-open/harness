@@ -85,7 +85,7 @@ public class HttpServer {
 
     public static void main(String[] args) throws Exception {
         Properties properties = ConfigurationHelper.parseInputArgs(args);
-        Configuration configuration = (Configuration) ConfigurationHelper.loadConfiguration("http-server.conf", properties, Configuration.class);
+        Configuration configuration = (Configuration) ConfigurationHelper.loadYAMLConfiguration("http-server.yml", properties, Configuration.class);
 
         log.info("server start with port {}", configuration.port);
         new HttpServer(configuration).run();

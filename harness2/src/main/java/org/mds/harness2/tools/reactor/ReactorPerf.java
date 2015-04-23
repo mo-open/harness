@@ -97,6 +97,6 @@ public class ReactorPerf {
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, ReactorPerf.class,
                 ReactorConfig.class,
-                "reactor.conf");
+                "reactor.yml");
     }
 }

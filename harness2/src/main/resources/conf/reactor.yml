@@ -1,0 +1,7 @@
+totalCount: 10000000
+#reactor,processor
+runs: reactor
+
+#1:event_loop,2:ring_buffer,3:thread_pool
+reactorType: 1
+eventCount: 1

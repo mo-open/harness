@@ -6,9 +6,9 @@ import org.mds.harness.common2.perf.PerfConfig;
  * Created by modongsong on 14-5-27.
  */
 public class JedisPerfConfiguration extends PerfConfig{
-    String redisAddress="127.0.0.1:11211";
-    int keyLen=10;
-    int dataLen=10;
-    int pipeMultiSize=10;
-    int pipeNumber=10;
+    public String redisAddress="127.0.0.1:11211";
+    public int keyLen=10;
+    public int dataLen=10;
+    public int pipeMultiSize=10;
+    public int pipeNumber=10;
 }

@@ -4,11 +4,11 @@ package org.mds.harness2.server;
  * @author Dongsong
  */
 public class Configuration {
-    int mode = 0;
-    int port = 9090;
-    int bossThreads = 1;
-    int workers = 16;
-    int acceptCount = 16;
-    int handlerCount = 8;
-    String responseFile = "response.m3u8";
+    public int mode = 0;
+    public int port = 9090;
+    public int bossThreads = 1;
+    public int workers = 16;
+    public int acceptCount = 16;
+    public int handlerCount = 8;
+    public String responseFile = "response.m3u8";
 }

@@ -177,6 +177,6 @@ public class TestGrizzlyMemcachedPerf {
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, TestGrizzlyMemcachedPerf.class,
                 TestMemcachedConfiguration.class,
-                "testMemcached.conf");
+                "testMemcached.yml");
     }
 }

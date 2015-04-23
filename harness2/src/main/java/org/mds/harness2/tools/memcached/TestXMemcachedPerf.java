@@ -182,6 +182,6 @@ public class TestXMemcachedPerf {
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, TestXMemcachedPerf.class,
                 TestMemcachedConfiguration.class,
-                "testMemcached.conf");
+                "testMemcached.yml");
     }
 }

@@ -15,25 +15,21 @@ public class TestMapDBPerf {
 
 
 
-    private DB makeDB(final TestMapDBConfig config){
-
-    }
-
     public void runCommon(final TestMapDBConfig config) {
-        final DB db = this.makeCommonDB(config);
+
 
         new PerfTester<PerfTester.SingleTask>("Test MapDB Memory", config)
                 .run((conf, index) -> {
 
                     return 1;
                 });
-        db.close();
+
     }
 
 
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, TestMapDBPerf.class,
                 TestMapDBConfig.class,
-                "testMapDB.conf");
+                "testMapDB.yml");
     }
 }

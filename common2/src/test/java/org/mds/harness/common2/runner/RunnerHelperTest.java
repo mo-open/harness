@@ -26,11 +26,11 @@ public class RunnerHelperTest {
     public void testRun() throws Exception {
         RunnerHelper.run(null, MainClass.class,
                 TestConfiguration.class,
-                "test-config.properties");
+                "test-config.yaml");
         assertEquals(property1, 1);
         RunnerHelper.run("start", false, null, MainClass.class,
                 TestConfiguration.class,
-                "test-config.properties");
+                "test-config.yaml");
         assertEquals(property2, "2");
 
         property1 = 0;
@@ -39,10 +39,10 @@ public class RunnerHelperTest {
             String[] args = {arg};
             RunnerHelper.run(args, MainClass.class,
                     TestConfiguration.class,
-                    "test-config.properties");
+                    "test-config.yaml");
             RunnerHelper.run("start", false, args, MainClass.class,
                     TestConfiguration.class,
-                    "test-config.properties");
+                    "test-config.yaml");
             assertEquals(property1, 0);
             assertNull(property2);
         }

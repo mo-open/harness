@@ -1,0 +1,6 @@
+threadCount: 100
+totalCount: 100000
+testRounds: 3
+
+#runs: all, normal,reflect
+runs: all

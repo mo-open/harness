@@ -34,6 +34,6 @@ public class RedisProducerConsumer {
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, RedisProducerConsumer.class,
                 RedisConfiguration.class,
-                "redis.conf");
+                "redis.yml");
     }
 }

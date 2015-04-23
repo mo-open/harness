@@ -71,6 +71,6 @@ public class TestMeetupClientPerf {
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, TestMeetupClientPerf.class,
                 TestMeetupClientPerf.class,
-                "testMemcached.conf");
+                "testMemcached.yml");
     }
 }

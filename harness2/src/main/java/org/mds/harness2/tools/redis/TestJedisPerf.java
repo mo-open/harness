@@ -522,6 +522,6 @@ public class TestJedisPerf {
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, TestJedisPerf.class,
                 JedisPerfConfiguration.class,
-                "redis-perf.conf");
+                "redis-perf.yml");
     }
 }

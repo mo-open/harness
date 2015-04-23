@@ -96,7 +96,7 @@ public class RunnerHelper {
             String inputConfigFile = getConfFile(args);
             if (inputConfigFile != null) configFile = inputConfigFile;
             Properties properties = ConfigurationHelper.parseInputArgs(args);
-            Object configuration = ConfigurationHelper.loadConfiguration(configFile, properties, configClass);
+            Object configuration = ConfigurationHelper.loadYAMLConfiguration(configFile, properties, configClass);
             log.info(String.format("Start,Arguments:" + ConfigurationHelper.argumentsString(configuration)));
             Object instance = mainClass.newInstance();
             String methodSuffixes = "";

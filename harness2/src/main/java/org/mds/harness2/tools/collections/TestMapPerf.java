@@ -41,6 +41,6 @@ public class TestMapPerf {
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, TestMapPerf.class,
                 TestConfig.class,
-                "test-map.conf");
+                "test-map.yml");
     }
 }

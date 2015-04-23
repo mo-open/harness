@@ -136,6 +136,6 @@ public class ProcessorPerf {
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, ProcessorPerf.class,
                 ProcessorConfiguration.class,
-                "processor.conf");
+                "processor.yml");
     }
 }

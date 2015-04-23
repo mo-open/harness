@@ -239,6 +239,6 @@ public class TestRegex {
 
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, TestRegex.class,
-                TestRegexConfiguration.class, "testRegex.conf");
+                TestRegexConfiguration.class, "testRegex.yml");
     }
 }

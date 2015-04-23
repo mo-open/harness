@@ -1,0 +1,24 @@
+threadCount: 100
+totalCount: 100000
+testRounds: 3
+interval: 1
+
+httpURL:
+host:
+port: 80
+
+asyncMaxTotal: 1000
+asyncMaxPerRoute: 1000
+#runs: sync1,sync2,async1,async2
+runs: sync2
+
+remapType: 0
+parse: true
+returnStream: false
+workerCount: 5
+
+parseThreads: 2
+remapThreads: 2
+peakDuration: 1000
+commonDuration: 100000
+consumerTime: 10

@@ -28,6 +28,6 @@ public class TestSystem {
 
     public static void main(String args[]) throws Exception {
         RunnerHelper.run(args, TestSystem.class,
-                SystemConfiguration.class, "system.conf");
+                SystemConfiguration.class, "system.yml");
     }
 }

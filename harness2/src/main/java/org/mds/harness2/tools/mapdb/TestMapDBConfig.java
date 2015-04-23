@@ -6,26 +6,26 @@ import org.mds.harness.common2.perf.PerfConfig;
  * Created by modongsong on 2015/4/22.
  */
 public class TestMapDBConfig extends PerfConfig {
-    double maxSizeInG = 0.1;
-    String storeType = "dmem";
-    String storeFile = "/tmp/mapdb";
-    String dataStruct = "hashMap";
-    int cacheSize = -1;
-    boolean enableCounter;
-    boolean dbCompress;
-    String cacheRef = "DEFAULT";
-    boolean cacheLRU;
-    boolean valueCompress;
-    boolean transaction;
-    boolean asyncWrite;
-    boolean mmapFile;
-    int asyncWriteDelayMs = 0;
-    int asyncWriteQueueSize = 32000;
-    long expireMaxSize = 10000;
-    double expireStoreSize = 0.1;
-    int btreeNodeSize = 5;
-    boolean useLock;
-    long queueSize;
+    public double maxSizeInG = 0.1;
+    public String storeType = "dmem";
+    public String storeFile = "/tmp/mapdb";
+    public String dataStruct = "hashMap";
+    public int cacheSize = -1;
+    public boolean enableCounter;
+    public boolean dbCompress;
+    public String cacheRef = "DEFAULT";
+    public boolean cacheLRU;
+    public boolean valueCompress;
+    public boolean transaction;
+    public boolean asyncWrite;
+    public boolean mmapFile;
+    public int asyncWriteDelayMs = 0;
+    public int asyncWriteQueueSize = 32000;
+    public long expireMaxSize = 10000;
+    public double expireStoreSize = 0.1;
+    public int btreeNodeSize = 5;
+    public boolean useLock;
+    public long queueSize;
 
     String dbMaker1, dbMaker2, dbMaker3, dbMaker4, dbMaker5 = "";
     String htreeMap1, htreeMap2, htreeMap3, htreeMap4, htreeMap5 = "";

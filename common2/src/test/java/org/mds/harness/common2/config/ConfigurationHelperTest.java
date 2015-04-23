@@ -15,7 +15,7 @@ public class ConfigurationHelperTest {
     static public class TestConfiguration extends PerfConfig {
         public int field_1;
         public String field_2;
-        String field_3;
+        public String field_3;
         public int field_4;
     }
 

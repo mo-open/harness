@@ -7,20 +7,20 @@ import org.mds.harness.common2.perf.PerfConfig;
  */
 public class Configuration extends PerfConfig {
 
-    String replicaSet = null;
+    public String replicaSet = null;
 
-    String databaseName = null;
+    public String databaseName = null;
 
-    String username = null;
+    public String username = null;
 
-    String password = null;
+    public String password = null;
 
-    boolean dropFirst = true;
-    int dataTypeCount = 50;
-    int dataItemCount = 100000;
+    public boolean dropFirst = true;
+    public int dataTypeCount = 50;
+    public int dataItemCount = 100000;
     //node: -1; 0: unack; 1: ack
-    int writeMode = -1;
-    int dataDuration = 1800000;
-    int expireTime=30;
-    int groupCount = 100;
+    public int writeMode = -1;
+    public int dataDuration = 1800000;
+    public int expireTime=30;
+    public int groupCount = 100;
 }

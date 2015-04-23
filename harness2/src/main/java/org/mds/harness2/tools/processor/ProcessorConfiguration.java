@@ -6,7 +6,7 @@ import org.mds.harness.common2.perf.PerfConfig;
  * @author Dongsong
  */
 public class ProcessorConfiguration extends PerfConfig {
-    int workerCount = 1;
-    int queueBatchSize = 10;
-    int bufferSize=10000;
+    public int workerCount = 1;
+    public int queueBatchSize = 10;
+    public int bufferSize=10000;
 }
