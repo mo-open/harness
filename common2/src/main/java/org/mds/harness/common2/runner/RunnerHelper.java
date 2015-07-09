@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Properties;
 
@@ -94,6 +95,69 @@ public class RunnerHelper {
                 return;
             }
             String inputConfigFile = getConfFile(args);
+
+            if (inputConfigFile != null) configFile = inputConfigFile;
+            Properties properties = ConfigurationHelper.parseInputArgs(args);
+            Object configuration = ConfigurationHelper.loadYAMLConfiguration(configFile, properties, configClass);
+            log.info(String.format("Start,Arguments:" + ConfigurationHelper.argumentsString(configuration)));
+            Object instance = mainClass.newInstance();
+            String methodSuffixes = "";
+            try {
+                if (enableMethodSuffix)
+                    methodSuffixes = ReflectUtils.getField(configuration, "runs").toString();
+            } catch (Exception ex) {
+
+            }
+
+            Method beforeRun = null, afterRun = null;
+            try {
+                beforeRun = mainClass.getDeclaredMethod("beforeRun", new Class[]{configClass});
+                afterRun = mainClass.getDeclaredMethod("beforeRun", new Class[]{configClass});
+            } catch (Exception ex) {
+
+            }
+            if (beforeRun != null) {
+                log.info("Before running ..... " + methodName);
+                beforeRun.invoke(instance, configuration);
+            }
+
+            if (!"".equals(methodSuffixes)) {
+                for (String methodSuffix : methodSuffixes.split(",")) {
+                    methodName = methodName + methodSuffix.substring(0, 1).toUpperCase() + methodSuffix.substring(1);
+                    Method testMothod = mainClass.getDeclaredMethod(methodName, new Class[]{configClass});
+                    testMothod.invoke(instance, configuration);
+                    Thread.sleep(2);
+                }
+            } else {
+                Method testMothod = mainClass.getDeclaredMethod(methodName, new Class[]{configClass});
+                testMothod.invoke(instance, configuration);
+            }
+
+            if (afterRun != null) {
+                log.info("After running ..... " + methodName);
+                afterRun.invoke(instance, configuration);
+            }
+        } catch (Exception ex) {
+            log.error("Failed to run test", ex);
+        }
+    }
+
+    public static void run(String methodName, boolean enableMethodSuffix, String[] args, String className) {
+        try {
+            if (methodName == null || "".equals(methodName)) {
+                methodName = "run";
+            }
+
+            Class mainClass = Class.forName(className);
+            Class configClass = ((ParameterizedType) mainClass.getGenericSuperclass()).getActualTypeArguments()[0].getClass();
+
+            if (hasHelp(args)) {
+                showHelp(methodName, mainClass, configClass);
+                return;
+            }
+            String configFile = mainClass.getSimpleName() + ".conf";
+            String inputConfigFile = getConfFile(args);
+
             if (inputConfigFile != null) configFile = inputConfigFile;
             Properties properties = ConfigurationHelper.parseInputArgs(args);
             Object configuration = ConfigurationHelper.loadYAMLConfiguration(configFile, properties, configClass);

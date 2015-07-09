@@ -26,7 +26,11 @@ public class DisrupterExecutor extends TestExecutor {
                 .addNext(configuration.threadCount,
                         index -> {
                             finishCounter.incrementAndGet();
-                            task.run(configuration, index);
+                            try {
+                                task.run(configuration, index);
+                            } catch (Exception ex) {
+
+                            }
                         }).build();
 
         for (int i = 0; i < configuration.testRounds; i++) {
