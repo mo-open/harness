@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -202,5 +203,10 @@ public class ReflectUtils {
             String errMsg = String.format("Failed to get all fields of class '%s': %s", cls.getName(), ex);
             throw new Exception(errMsg, ex);
         }
+    }
+
+    public static <T> Class<T> getTypeClass(Class mainClass) throws ClassNotFoundException {
+        String configClassName = ((ParameterizedType) mainClass.getGenericSuperclass()).getActualTypeArguments()[0].getTypeName();
+        return (Class<T>) Class.forName(configClassName);
     }
 }

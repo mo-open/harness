@@ -24,25 +24,37 @@ public class RunnerHelperTest {
 
     @Test
     public void testRun() throws Exception {
-        RunnerHelper.run(null, MainClass.class,
-                TestConfiguration.class,
-                "test-config.yaml");
+        RunnerHelper.newInvoker()
+                .setMethodName(null)
+                .setMainClass(MainClass.class)
+                .setConfigClass(TestConfiguration.class)
+                .setConfigFile("test-config.yaml").invoke();
+
         assertEquals(property1, 1);
-        RunnerHelper.run("start", false, null, MainClass.class,
-                TestConfiguration.class,
-                "test-config.yaml");
+        RunnerHelper.newInvoker()
+                .setMethodName("start")
+                .enableMethodSuffix(false)
+                .setMainClass(MainClass.class)
+                .setConfigClass(TestConfiguration.class)
+                .setConfigFile("test-config.yaml").invoke();
         assertEquals(property2, "2");
 
         property1 = 0;
         property2 = null;
         for (String arg : RunnerHelper.helpArgs) {
             String[] args = {arg};
-            RunnerHelper.run(args, MainClass.class,
-                    TestConfiguration.class,
-                    "test-config.yaml");
-            RunnerHelper.run("start", false, args, MainClass.class,
-                    TestConfiguration.class,
-                    "test-config.yaml");
+            RunnerHelper.newInvoker()
+                    .setArgs(args)
+                    .setMainClass(MainClass.class)
+                    .setConfigClass(TestConfiguration.class)
+                    .setConfigFile("test-config.yaml").invoke();
+            RunnerHelper.newInvoker()
+                    .setMethodName("start")
+                    .setArgs(args)
+                    .enableMethodSuffix(false)
+                    .setMainClass(MainClass.class)
+                    .setConfigClass(TestConfiguration.class)
+                    .setConfigFile("test-config.yaml").invoke();
             assertEquals(property1, 0);
             assertNull(property2);
         }

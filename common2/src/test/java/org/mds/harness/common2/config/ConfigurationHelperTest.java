@@ -28,7 +28,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testLoadConfiguration() throws Exception {
-        TestConfiguration configuration = (TestConfiguration) ConfigurationHelper.loadConfiguration("test-config.properties", null, TestConfiguration.class);
+        TestConfiguration configuration = ConfigurationHelper.loadConfiguration("test-config.properties", (Properties) null, TestConfiguration.class);
         assertEquals(configuration.field_1, 1);
         assertEquals(configuration.field_2, "2");
         assertEquals(configuration.field_3, "3");
@@ -40,7 +40,7 @@ public class ConfigurationHelperTest {
         Properties inputProperties = new Properties();
         inputProperties.setProperty("field_1", "9");
 
-        TestConfiguration configuration = (TestConfiguration) ConfigurationHelper.loadConfiguration("test-config.properties", inputProperties, TestConfiguration.class);
+        TestConfiguration configuration = ConfigurationHelper.loadConfiguration("test-config.properties", inputProperties, TestConfiguration.class);
         assertEquals(configuration.field_1, 9);
         assertEquals(configuration.field_2, "2");
         assertEquals(configuration.field_3, "3");
@@ -49,15 +49,15 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testLoadYAMLConfiguration() throws Exception {
-        TestConfiguration configuration = (TestConfiguration) ConfigurationHelper.loadYAMLConfiguration("test-config.yaml", null, TestConfiguration.class);
+        TestConfiguration configuration = ConfigurationHelper.loadYAMLConfiguration("test-config.yaml", null, TestConfiguration.class);
         assertEquals(configuration.field_1, 1);
         assertEquals(configuration.field_2, "2");
         assertEquals(configuration.field_3, "3");
         assertEquals(configuration.field_4, 4);
-        assertEquals(configuration.field_5[0],1);
-        assertEquals(configuration.field_5[1],2);
-        assertEquals(configuration.subConfig.f1,1);
-        assertEquals(configuration.subConfig.f2,"2");
+        assertEquals(configuration.field_5[0], 1);
+        assertEquals(configuration.field_5[1], 2);
+        assertEquals(configuration.subConfig.f1, 1);
+        assertEquals(configuration.subConfig.f2, "2");
     }
 
     @Test
@@ -65,15 +65,15 @@ public class ConfigurationHelperTest {
         Properties inputProperties = new Properties();
         inputProperties.setProperty("field_1", "9");
 
-        TestConfiguration configuration = (TestConfiguration) ConfigurationHelper.loadYAMLConfiguration("test-config.yaml", inputProperties, TestConfiguration.class);
+        TestConfiguration configuration = ConfigurationHelper.loadYAMLConfiguration("test-config.yaml", inputProperties, TestConfiguration.class);
         assertEquals(configuration.field_1, 9);
         assertEquals(configuration.field_2, "2");
         assertEquals(configuration.field_3, "3");
         assertEquals(configuration.field_4, 4);
-        assertEquals(configuration.field_5[0],1);
-        assertEquals(configuration.field_5[1],2);
-        assertEquals(configuration.subConfig.f1,1);
-        assertEquals(configuration.subConfig.f2,"2");
+        assertEquals(configuration.field_5[0], 1);
+        assertEquals(configuration.field_5[1], 2);
+        assertEquals(configuration.subConfig.f1, 1);
+        assertEquals(configuration.subConfig.f2, "2");
     }
 
     @Test

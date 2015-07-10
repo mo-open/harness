@@ -24,7 +24,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.4</version>
+                <version>1.16.5</version>
             </dependency>
             <dependency>
                 <!-- Import dependency management from Spring Boot -->
@@ -43,9 +43,24 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>1.10.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-generator-annprocess</artifactId>
+                <version>1.10.2</version>
+            </dependency>
+            <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-map</artifactId>
                 <version>2.1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.1.42</version>
             </dependency>
             <dependency>
                 <groupId>org.mapdb</groupId>
