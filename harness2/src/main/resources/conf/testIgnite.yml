@@ -1,0 +1,10 @@
+jmh:
+    #Throughput/thrpt, AverageTime/avgt, SampleTime/sample, SingleShotTime/ss, All/all
+    mode: thrpt
+    threads: 2
+    wIterations: 1
+    iterations: 3
+    forks: 1
+
+count: 1000000
+length: 10
