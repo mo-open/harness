@@ -21,6 +21,7 @@ import java.util.*;
 public class ConfigurationHelper {
     public final static String ARG_SEPARATOR = "||";
     public final static String confFileArg = "-f";
+    public final static String defaultConfFileArg = "-df";
     public final static String YAML_SUFFIX = ".yaml";
     public final static String YML_SUFFIX = ".yml";
     public final static String CONF_SUFFIX = ".conf";
@@ -162,11 +163,11 @@ public class ConfigurationHelper {
         return sb.toString().substring(1);
     }
 
-    private static String getConfFile(String[] args) {
+    public static String getConfFile(String[] args, String option) {
         if (args == null) return null;
 
         for (int i = 0; i < args.length; i++) {
-            if (confFileArg.equals(args[i])) {
+            if (option.equals(args[i])) {
                 if (i < args.length - 1)
                     return args[i + 1];
                 else
@@ -175,6 +176,14 @@ public class ConfigurationHelper {
         }
 
         return null;
+    }
+
+    private static String getConfFile(String[] args) {
+        return getConfFile(args, confFileArg);
+    }
+
+    public static String getDefaultConfFile(String[] args) {
+        return getConfFile(args, defaultConfFileArg);
     }
 
     private static String getConfigFile(Class mainClass, String fileSuffix) {
@@ -188,6 +197,7 @@ public class ConfigurationHelper {
     public static <T> T loadConfiguration(String[] args, Class mainClass, Class<T> configClass, String configFile) throws Exception {
         String inputConfigFile = getConfFile(args);
         if (inputConfigFile != null) configFile = inputConfigFile;
+        if (configFile == null) configFile = getDefaultConfFile(args);
         if (configFile == null) configFile = getConfigFile(mainClass, YAML_SUFFIX);
         if (configFile == null) configFile = getConfigFile(mainClass, YML_SUFFIX);
         if (configFile == null) configFile = getConfigFile(mainClass, CONF_SUFFIX);

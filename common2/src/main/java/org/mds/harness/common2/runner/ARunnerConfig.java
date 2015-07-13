@@ -17,4 +17,8 @@ public abstract class ARunnerConfig {
     public String toString() {
         return JSON.toJSONString(this, true);
     }
+
+    public String defaultConfigFile() {
+        return this.getClass().getSimpleName() + ".yml";
+    }
 }
