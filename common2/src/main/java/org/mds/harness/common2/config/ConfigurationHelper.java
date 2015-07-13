@@ -157,7 +157,7 @@ public class ConfigurationHelper {
         Map<String, Object> configurationMap = convertConfiguration(configuration);
         StringBuilder sb = new StringBuilder();
         configurationMap.forEach((key, value) -> {
-            sb.append(",").append(key).append("=").append(value);
+            sb.append("\r\n").append(key).append("=").append(value);
         });
 
         return sb.toString().substring(1);

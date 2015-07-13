@@ -7,9 +7,8 @@ import java.util.Map;
 
 public abstract class ARunnerConfig {
     protected final static Map<String, String> valueOptions = new HashMap<>();
-    String runs;
 
-    public String valueOptions(String propertyName) {
+    public static String valueOptions(String propertyName) {
         return valueOptions.get(propertyName);
     }
 

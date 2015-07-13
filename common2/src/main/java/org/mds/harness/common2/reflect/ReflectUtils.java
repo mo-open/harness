@@ -125,14 +125,23 @@ public class ReflectUtils {
         }
     }
 
-    /**
-     * Read all fields value, including private,public,static
-     *
-     * @param object
-     * @return
-     * @throws Exception
-     */
     public static Map<String, Object> readFields(Object object) throws Exception {
+        try {
+            List<Field> fields = FieldUtils.getAllFieldsList(object.getClass());
+            Map<String, Object> fieldValues = new HashMap();
+            for (Field field : fields) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    fieldValues.put(field.getName(), FieldUtils.readField(field, object, true));
+                }
+            }
+            return fieldValues;
+        } catch (Exception ex) {
+            String errMsg = String.format("Failed to read fields of class '%s' : %s", object.getClass().getName(), ex);
+            throw new Exception(errMsg, ex);
+        }
+    }
+
+    public static Map<String, Object> readAllFields(Object object) throws Exception {
         try {
             List<Field> fields = FieldUtils.getAllFieldsList(object.getClass());
             Map<String, Object> fieldValues = new HashMap();
@@ -192,12 +201,25 @@ public class ReflectUtils {
     }
 
     public static List<String> getFieldNames(Class cls) throws Exception {
+        return getFieldNames(cls, null, null);
+    }
+
+    public static List<String> getFieldNames(Class cls, String parent, List<Class> expandFieldClasses) throws Exception {
         try {
             List<Field> fields = FieldUtils.getAllFieldsList(cls);
             List<String> fieldNames = new ArrayList();
             for (Field field : fields) {
-                if (!Modifier.isFinal(field.getModifiers()))
-                    fieldNames.add(field.getName());
+                if (Modifier.isFinal(field.getModifiers())) continue;
+                String fullFieldName = field.getName();
+                if (parent != null && !parent.isEmpty()) {
+                    fullFieldName = parent + "." + fullFieldName;
+                }
+                if (expandFieldClasses != null && expandFieldClasses.contains(field.getType())) {
+                    fieldNames.addAll(getFieldNames(field.getType(), fullFieldName, expandFieldClasses));
+                    continue;
+                }
+
+                fieldNames.add(fullFieldName);
             }
             return fieldNames;
         } catch (Throwable ex) {
@@ -207,24 +229,7 @@ public class ReflectUtils {
     }
 
     public static List<String> getFieldNames(Class cls, List<Class> expandFieldClasses) throws Exception {
-        try {
-            List<Field> fields = FieldUtils.getAllFieldsList(cls);
-            List<String> fieldNames = new ArrayList();
-            for (Field field : fields) {
-                if (Modifier.isFinal(field.getModifiers())) continue;
-                ;
-                if (expandFieldClasses.contains(field.getType())) {
-                    fieldNames.addAll(getFieldNames(field.getType()));
-                    continue;
-                }
-
-                fieldNames.add(field.getName());
-            }
-            return fieldNames;
-        } catch (Throwable ex) {
-            String errMsg = String.format("Failed to get all fields of class '%s': %s", cls.getName(), ex);
-            throw new Exception(errMsg, ex);
-        }
+        return getFieldNames(cls, null, expandFieldClasses);
     }
 
     public static <T> Class<T> getTypeClass(Class mainClass) throws ClassNotFoundException {

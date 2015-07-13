@@ -1,5 +1,7 @@
 package org.mds.harness.common2.runner;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.mds.harness.common2.config.ConfigurationHelper;
 import org.mds.harness.common2.reflect.ReflectUtils;
 import org.openjdk.jmh.runner.Runner;
@@ -60,6 +62,16 @@ public class RunnerHelper {
         }
     }
 
+    private static String getOptionValues(String optionName, Class configClass) {
+        String value = "";
+        try {
+            value = (String) MethodUtils.invokeStaticMethod(configClass, "valueOptions", new Object[]{optionName});
+        } catch (Exception ex) {
+            value = "";
+        }
+        return value == null ? "" : "["+value+"]";
+    }
+
     private static void showHelp(String methodName, Class mainClass, Class configClass) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("HELP -- \r\n")
@@ -72,8 +84,13 @@ public class RunnerHelper {
             if (option.equals("runs")) {
                 stringBuilder.append(indent_2).append(option).append("   [")
                         .append(getRunMethods(methodName, mainClass)).append("]").append("\r\n");
-            } else
-                stringBuilder.append(indent_2).append(option).append("\r\n");
+            } else {
+                stringBuilder.append(indent_2)
+                        .append(option)
+                        .append("  ")
+                        .append(getOptionValues(option, configClass))
+                        .append("\r\n");
+            }
         }
         stringBuilder.append(indent_1).append("help args: ");
         for (String arg : helpArgs) {

@@ -4,24 +4,25 @@ import org.openjdk.jmh.annotations.Mode;
 
 public abstract class JMHRunnerConfig extends ARunnerConfig {
     static {
-        valueOptions.put("mode", String.join(" ", Mode.getKnown()));
+        valueOptions.put("jmh.mode", String.join(",", Mode.getKnown()));
     }
 
-    private JMHConfig jmh = new JMHConfig();
+    public JMHConfig jmh = new JMHConfig();
+    public String runs;
 
     public JMHConfig jmh() {
         return this.jmh;
     }
 
     public static class JMHConfig extends ARunnerConfig {
-        String mode = Mode.Throughput.name();
-        int threads = 1;
-        int wIterations;
-        int iterations = 1;
-        int forks = 1;
+        public String mode = Mode.Throughput.name();
+        public int threads = 1;
+        public int wIterations;
+        public int iterations = 1;
+        public int forks = 1;
 
         public Mode mode() {
-            return Mode.valueOf(this.mode);
+            return Mode.deepValueOf(this.mode);
         }
     }
 }

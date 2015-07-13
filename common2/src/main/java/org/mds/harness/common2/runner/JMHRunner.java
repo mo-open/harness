@@ -20,10 +20,9 @@ public abstract class JMHRunner<C extends JMHRunnerConfig> {
     @Setup
     public void init(BenchmarkParams params) {
         try {
-            log.info("-----"+args);
             String mainClassName = StringUtils.substringBeforeLast(params.getBenchmark(), ".");
             this.config = ConfigurationHelper.loadConfiguration(this.args, mainClassName);
-            log.info("BenchMark configuration: " + this.config);
+            //log.info("BenchMark configuration: " + this.config);
         } catch (Exception ex) {
             log.error("",ex);
         }
