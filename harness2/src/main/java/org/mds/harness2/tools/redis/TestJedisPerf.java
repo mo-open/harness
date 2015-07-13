@@ -520,8 +520,11 @@ public class TestJedisPerf {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, TestJedisPerf.class,
-                JedisPerfConfiguration.class,
-                "redis-perf.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(TestJedisPerf.class)
+                .setConfigFile("redis-perf.yml")
+                .setConfigClass(JedisPerfConfiguration.class)
+                .invoke();
     }
 }

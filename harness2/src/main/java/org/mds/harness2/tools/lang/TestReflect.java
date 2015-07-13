@@ -58,7 +58,11 @@ public class TestReflect {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, TestReflect.class,
-                PerfConfig.class, "testReflect.conf");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(TestReflect.class)
+                .setConfigClass(PerfConfig.class)
+                .setConfigFile("testReglect.yml")
+                .invoke();
     }
 }

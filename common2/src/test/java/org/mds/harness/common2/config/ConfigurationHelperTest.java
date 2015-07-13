@@ -64,6 +64,7 @@ public class ConfigurationHelperTest {
     public void testLoadYAMLConfigurationWithInput() throws Exception {
         Properties inputProperties = new Properties();
         inputProperties.setProperty("field_1", "9");
+        inputProperties.setProperty("subConfig.f1","5");
 
         TestConfiguration configuration = ConfigurationHelper.loadYAMLConfiguration("test-config.yaml", inputProperties, TestConfiguration.class);
         assertEquals(configuration.field_1, 9);
@@ -72,12 +73,7 @@ public class ConfigurationHelperTest {
         assertEquals(configuration.field_4, 4);
         assertEquals(configuration.field_5[0], 1);
         assertEquals(configuration.field_5[1], 2);
-        assertEquals(configuration.subConfig.f1, 1);
+        assertEquals(configuration.subConfig.f1, 5);
         assertEquals(configuration.subConfig.f2, "2");
-    }
-
-    @Test
-    public void testParseInputArgs() throws Exception {
-
     }
 }

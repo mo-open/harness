@@ -95,6 +95,11 @@ public class NativeDriverTest {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, NativeDriverTest.class, Configuration.class, "testMongo.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(NativeDriverTest.class)
+                .setConfigClass(Configuration.class)
+                .setConfigFile("testMongo.yml")
+                .invoke();
     }
 }

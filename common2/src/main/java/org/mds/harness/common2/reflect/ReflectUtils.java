@@ -196,6 +196,28 @@ public class ReflectUtils {
             List<Field> fields = FieldUtils.getAllFieldsList(cls);
             List<String> fieldNames = new ArrayList();
             for (Field field : fields) {
+                if (!Modifier.isFinal(field.getModifiers()))
+                    fieldNames.add(field.getName());
+            }
+            return fieldNames;
+        } catch (Throwable ex) {
+            String errMsg = String.format("Failed to get all fields of class '%s': %s", cls.getName(), ex);
+            throw new Exception(errMsg, ex);
+        }
+    }
+
+    public static List<String> getFieldNames(Class cls, List<Class> expandFieldClasses) throws Exception {
+        try {
+            List<Field> fields = FieldUtils.getAllFieldsList(cls);
+            List<String> fieldNames = new ArrayList();
+            for (Field field : fields) {
+                if (Modifier.isFinal(field.getModifiers())) continue;
+                ;
+                if (expandFieldClasses.contains(field.getType())) {
+                    fieldNames.addAll(getFieldNames(field.getType()));
+                    continue;
+                }
+
                 fieldNames.add(field.getName());
             }
             return fieldNames;

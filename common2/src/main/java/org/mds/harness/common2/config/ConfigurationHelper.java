@@ -47,7 +47,7 @@ public class ConfigurationHelper {
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         try {
-            return mapper.readValue(mapper.writeValueAsString(properties), configurationClass);
+            return mapper.readValue(mapper.writeValueAsString(propertiesToMap(properties)), configurationClass);
         } catch (Exception ex) {
             throw new Exception(ex.getMessage());
         }
@@ -69,14 +69,42 @@ public class ConfigurationHelper {
         return configuration;
     }
 
+    private static Map propertiesToMap(Properties properties) {
+        Map<String, Object> result = new HashMap<>();
+        properties.entrySet().forEach(entry -> {
+            Map<String, Object> curMap = result;
+            String key = (String) entry.getKey();
+            while (key.contains(".")) {
+                String mapKey = StringUtils.substringBefore(key, ".");
+                key = StringUtils.substringAfter(key, ".");
+                Map<String, Object> map = (Map<String, Object>) curMap.get(mapKey);
+                if (map == null) {
+                    map = new HashMap();
+                    curMap.put(mapKey, map);
+                }
+                curMap = map;
+            }
+            curMap.put(key, entry.getValue());
+        });
+        return result;
+    }
+
     private static void setInputPropertiesToConfiguration(Object object, Properties inputProperties) throws Exception {
         Object inputObject = propertiesToBean(inputProperties, object.getClass());
         inputProperties.entrySet().forEach(entry -> {
+            Object fieldObject = inputObject;
+            Object originObject = object;
+            String fieldName = (String) entry.getKey();
             try {
-                Object value = ReflectUtils.getField(inputObject, entry.getKey().toString());
-                ReflectUtils.setField(object, entry.getKey().toString(), value);
+                while (fieldName.contains(".")) {
+                    fieldObject = ReflectUtils.getField(fieldObject, StringUtils.substringBefore(fieldName, "."));
+                    originObject = ReflectUtils.getField(originObject, StringUtils.substringBefore(fieldName, "."));
+                    fieldName = StringUtils.substringAfter(fieldName, ".");
+                }
+                Object value = ReflectUtils.getField(fieldObject, fieldName);
+                ReflectUtils.setField(originObject, fieldName, value);
             } catch (Exception ex) {
-                log.error("Failed to set property: " + entry);
+                log.error("Failed to set property: " + entry + ": " + ex);
             }
         });
 
@@ -107,6 +135,10 @@ public class ConfigurationHelper {
 
     public static List<String> argumentNameList(Class cls) throws Exception {
         return ReflectUtils.getFieldNames(cls);
+    }
+
+    public static List<String> argumentNameList(Class cls, List<Class> expandFieldClasses) throws Exception {
+        return ReflectUtils.getFieldNames(cls, expandFieldClasses);
     }
 
     public static String argumentNames(Class cls) throws Exception {

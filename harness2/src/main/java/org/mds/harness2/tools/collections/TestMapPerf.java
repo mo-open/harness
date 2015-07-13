@@ -39,8 +39,11 @@ public class TestMapPerf {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, TestMapPerf.class,
-                TestConfig.class,
-                "test-map.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(TestMapPerf.class)
+                .setConfigClass(TestConfig.class)
+                .setConfigFile("test-map.yml")
+                .invoke();
     }
 }

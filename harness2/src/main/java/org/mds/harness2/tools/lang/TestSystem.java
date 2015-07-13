@@ -27,7 +27,11 @@ public class TestSystem {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, TestSystem.class,
-                SystemConfiguration.class, "system.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(TestSystem.class)
+                .setConfigClass(SystemConfiguration.class)
+                .setConfigFile("system.yml")
+                .invoke();
     }
 }

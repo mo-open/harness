@@ -10,4 +10,9 @@ public class TestConfig {
     public String b;
     public String c;
     public int d;
+    public JMH jmh;
+
+    public static class JMH {
+        int count;
+    }
 }

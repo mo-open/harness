@@ -193,8 +193,11 @@ public class TestMapDBPerf {
 
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, TestMapDBPerf.class,
-                TestMapDBConfig.class,
-                "testMapDB.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(TestMapDBPerf.class)
+                .setConfigClass(TestMapDBConfig.class)
+                .setConfigFile("testMapDB.yml")
+                .invoke();
     }
 }

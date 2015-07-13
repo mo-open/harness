@@ -134,8 +134,11 @@ public class ProcessorPerf {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, ProcessorPerf.class,
-                ProcessorConfiguration.class,
-                "processor.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(ProcessorPerf.class)
+                .setConfigClass(ProcessorConfiguration.class)
+                .setConfigFile("processor.yml")
+                .invoke();
     }
 }

@@ -95,8 +95,11 @@ public class ReactorPerf {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, ReactorPerf.class,
-                ReactorConfig.class,
-                "reactor.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(ReactorPerf.class)
+                .setConfigClass(ReactorConfig.class)
+                .setConfigFile("reactor.yml")
+                .invoke();
     }
 }

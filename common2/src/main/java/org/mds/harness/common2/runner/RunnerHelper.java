@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +65,9 @@ public class RunnerHelper {
         stringBuilder.append("HELP -- \r\n")
                 .append(indent_1).append(ConfigurationHelper.confFileArg).append(" configFile\r\n");
         stringBuilder.append(indent_1).append("App Options:\r\n");
-        List<String> optionList = ConfigurationHelper.argumentNameList(configClass);
+        List<Class> expandFieldClasses = new ArrayList<>();
+        expandFieldClasses.add(JMHRunnerConfig.JMHConfig.class);
+        List<String> optionList = ConfigurationHelper.argumentNameList(configClass, expandFieldClasses);
         for (String option : optionList) {
             if (option.equals("runs")) {
                 stringBuilder.append(indent_2).append(option).append("   [")
@@ -115,9 +118,8 @@ public class RunnerHelper {
 
     private static void invokeJMH(String methodName, Class mainClass, String[] args, Object configuration, String methodSuffixes) throws Exception {
         String benchmarks = mainClass.getName() + ".*" + methodName + "(" + methodSuffixes.replace(",", "|") + ")";
-        log.info("-----"+benchmarks);
         JMHRunnerConfig config = (JMHRunnerConfig) configuration;
-        JMHRunnerConfig.JMHConfig jmhConfig = config.jmhConfig();
+        JMHRunnerConfig.JMHConfig jmhConfig = config.jmh();
         Options options = new OptionsBuilder()
                 .param("args", String.join(ConfigurationHelper.ARG_SEPARATOR, args))
                 .measurementIterations(jmhConfig.iterations)

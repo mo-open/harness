@@ -7,10 +7,10 @@ public abstract class JMHRunnerConfig extends ARunnerConfig {
         valueOptions.put("mode", String.join(" ", Mode.getKnown()));
     }
 
-    private JMHConfig jmhConfig = new JMHConfig();
+    private JMHConfig jmh = new JMHConfig();
 
-    public JMHConfig jmhConfig() {
-        return this.jmhConfig;
+    public JMHConfig jmh() {
+        return this.jmh;
     }
 
     public static class JMHConfig extends ARunnerConfig {

@@ -180,8 +180,11 @@ public class TestXMemcachedPerf {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, TestXMemcachedPerf.class,
-                TestMemcachedConfiguration.class,
-                "testMemcached.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(TestXMemcachedPerf.class)
+                .setConfigClass(TestMemcachedConfiguration.class)
+                .setConfigFile("testMemcached.yml")
+                .invoke();
     }
 }

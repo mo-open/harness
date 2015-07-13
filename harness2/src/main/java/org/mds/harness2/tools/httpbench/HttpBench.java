@@ -816,6 +816,11 @@ public class HttpBench {
 //    }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, HttpBench.class, Configuration.class, "httpBench.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(HttpBench.class)
+                .setConfigClass(Configuration.class)
+                .setConfigFile("httpBench.yml")
+                .invoke();
     }
 }

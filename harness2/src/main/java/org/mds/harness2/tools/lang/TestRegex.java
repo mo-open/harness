@@ -238,7 +238,11 @@ public class TestRegex {
     }
 
     public static void main(String args[]) throws Exception {
-        RunnerHelper.run(args, TestRegex.class,
-                TestRegexConfiguration.class, "testRegex.yml");
+        RunnerHelper.newInvoker()
+                .setArgs(args)
+                .setMainClass(TestRegex.class)
+                .setConfigClass(TestRegexConfiguration.class)
+                .setConfigFile("testRegex.yml")
+                .invoke();
     }
 }
