@@ -14,4 +14,12 @@ public abstract class JMHInternalRunner<C extends JMHRunnerConfig> extends JMHAb
         super.doInit(this.args, params);
     }
 
+    @TearDown
+    public void end() {
+        this.tearDown();
+    }
+
+    protected void tearDown() {
+
+    }
 }

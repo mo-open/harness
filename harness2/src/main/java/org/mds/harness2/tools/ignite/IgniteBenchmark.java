@@ -1,12 +1,18 @@
 package org.mds.harness2.tools.ignite;
 
+import org.apache.ignite.cache.CachePeekMode;
 import org.mds.harness.common2.runner.JMHInternalRunner;
 import org.mds.harness.common2.runner.JMHMainRunner;
 import org.openjdk.jmh.annotations.Benchmark;
 
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.ignite.Ignite;
+import org.apache.ignite.Ignition;
+import org.apache.ignite.IgniteCache;
 
 public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
 
@@ -16,9 +22,27 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
         private String name = "";
     }
 
-    public static class PrepareData extends JMHInternalRunner<IgniteConfig> {
+    private static class IgniteBenchSetup extends JMHInternalRunner<IgniteConfig> {
+        Ignite ignite;
+        IgniteCache igniteCache;
+
+        @Override
+        protected void setup(IgniteConfig config) {
+            this.ignite = Ignition.start(config.cacheConfig);
+            this.igniteCache = this.ignite.cache(config.cacheName);
+        }
+
+        @Override
+        protected void tearDown() {
+            log.info("Test finished, Current Cache size: " + this.igniteCache.size(CachePeekMode.PRIMARY));
+            this.ignite.close();
+        }
+    }
+
+    public static class PrepareData extends IgniteBenchSetup {
         Object originValue;
         AtomicInteger index = new AtomicInteger();
+        Random random = new Random();
         boolean isStringValue;
 
         @Override
@@ -44,7 +68,7 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
                 int thisIndex = this.index.get();
                 while (thisIndex < baseCount) {
                     if (index.compareAndSet(thisIndex, thisIndex++)) {
-
+                        igniteCache.put(thisIndex, this.originValue);
                     }
                 }
             });
@@ -55,27 +79,39 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
     @Benchmark
     public void benchInsert(PrepareData prepareData) {
         int nextIndex = prepareData.index.incrementAndGet();
-
+        prepareData.igniteCache.put(nextIndex, prepareData.originValue);
     }
 
     @Benchmark
     public void benchGet(PrepareData prepareData) {
-        int nextIndex = prepareData.index.incrementAndGet();
+        int nextIndex = prepareData.index.decrementAndGet();
+        prepareData.igniteCache.get(nextIndex);
     }
 
     @Benchmark
     public void benchRemove(PrepareData prepareData) {
-        int nextIndex = prepareData.index.incrementAndGet();
+        int nextIndex = prepareData.index.decrementAndGet();
+        prepareData.igniteCache.remove(nextIndex);
     }
 
     @Benchmark
     public void benchUpdate(PrepareData prepareData) {
-
+        int getIndex = prepareData.random.nextInt(prepareData.config().baseCount);
+        prepareData.igniteCache.invoke(getIndex, (entry, objects) -> {
+            Object value = entry.getValue();
+            if (value instanceof TestData) {
+                TestData data = (TestData) value;
+                data.count = 1;
+            }
+            return null;
+        });
     }
 
     @Benchmark
     public void benchInsertAndGet(PrepareData prepareData) {
         int nextIndex = prepareData.index.incrementAndGet();
-
+        int getIndex = prepareData.random.nextInt(nextIndex);
+        prepareData.igniteCache.put(nextIndex, prepareData.originValue);
+        prepareData.igniteCache.get(getIndex);
     }
 }
