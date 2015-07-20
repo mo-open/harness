@@ -9,22 +9,38 @@
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util.xsd">
     <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
-        <property name="clientMode" value="true"/>
+        <property name="gridName" value="default-grid"/>
         <property name="localHost" value="127.0.0.1"/>
-        <property name="peerClassLoadingEnabled" value="false"/>
+        <property name="clientMode" value="true"/>
+
+        <property name="peerClassLoadingEnabled" value="true"/>
+        <property name="gridLogger">
+            <bean class="org.apache.ignite.logger.slf4j.Slf4jLogger"/>
+        </property>
 
         <property name="cacheConfiguration">
             <list>
                 <bean class="org.apache.ignite.configuration.CacheConfiguration">
-                    <property name="name" value="TestCache"/>
+                    <property name="name" value="DefaultCache"/>
                     <property name="cacheMode" value="PARTITIONED"/>
+                    <property name="atomicityMode" value="ATOMIC"/>
                     <property name="backups" value="1"/>
+                    <property name="writeSynchronizationMode" value="PRIMARY_SYNC"/>
+                </bean>
+                <bean class="org.apache.ignite.configuration.CacheConfiguration">
+                    <property name="name" value="IndexedCache"/>
+                    <property name="cacheMode" value="PARTITIONED"/>
+                    <property name="atomicityMode" value="ATOMIC"/>
+                    <property name="backups" value="1"/>
+                    <property name="writeSynchronizationMode" value="PRIMARY_SYNC"/>
+                    <property name="indexedTypes">
+                        <list>
+                            <value>java.lang.String</value>
+                            <value>org.mds.harness.model.ignite.IndexedData</value>
+                        </list>
+                    </property>
                 </bean>
             </list>
-        </property>
-
-        <property name="gridLogger">
-            <bean class="org.apache.ignite.logger.slf4j.Slf4jLogger"/>
         </property>
 
         <property name="discoverySpi">
@@ -33,13 +49,13 @@
                     <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">
                         <property name="addresses">
                             <list>
-                                <!--&lt;!&ndash;&lt;!&ndash; In distributed environment, replace with actual host IP address. &ndash;&gt;&ndash;&gt;-->
-                                <!--<value>192.168.205.1:47500..47509</value>-->
+                                <!-- In distributed environment, replace with actual host IP address. -->
                                 <value>127.0.0.1:47500..47509</value>
                             </list>
                         </property>
                     </bean>
                 </property>
+                <property name="socketTimeout" value="3000"/>
             </bean>
         </property>
     </bean>

@@ -6,8 +6,8 @@ public class IgniteConfig extends JMHRunnerConfig {
     public int count;
     public int baseCount;
     public int length;
-    //String,Object
-    public String dataType;
+    //String,Object,indexType
+    public int dataType;
     public String cacheConfig="ignite-client.xml";
-    public String cacheName="TestCache";
+    public String cacheName="DefaultCache";
 }

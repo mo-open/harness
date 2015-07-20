@@ -18,6 +18,14 @@
         </dependency>
         <dependency>
             <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-indexing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
             <artifactId>ignite-spring</artifactId>
         </dependency>
         <dependency>
@@ -60,6 +68,10 @@
         <dependency>
             <groupId>org.mds</groupId>
             <artifactId>harness-common2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mds</groupId>
+            <artifactId>harness-models</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mds</groupId>

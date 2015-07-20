@@ -14,6 +14,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,7 +42,8 @@ public class RunnerHelper {
             for (Method method : mainClass.getDeclaredMethods()) {
                 String name = method.getName();
                 if (name.startsWith(methodName)) {
-                    name = name.substring(methodName.length()).toLowerCase();
+                    name = name.substring(methodName.length());
+                    name = name.substring(0, 1).toLowerCase() + name.substring(1);
                     methods = methods + " " + name;
                 }
             }
@@ -69,7 +71,7 @@ public class RunnerHelper {
         } catch (Exception ex) {
             value = "";
         }
-        return value == null ? "" : "["+value+"]";
+        return value == null ? "" : "[" + value + "]";
     }
 
     private static void showHelp(String methodName, Class mainClass, Class configClass) throws Exception {
@@ -134,7 +136,11 @@ public class RunnerHelper {
     }
 
     private static void invokeJMH(String methodName, Class mainClass, String[] args, Object configuration, String methodSuffixes) throws Exception {
-        String benchmarks = mainClass.getName() + ".*" + methodName + "(" + methodSuffixes.replace(",", "|") + ")";
+        String[] marks = methodSuffixes.split(",");
+        for (int i = 0; i < marks.length; i++) {
+            marks[i] = marks[i].substring(0, 1).toUpperCase() + marks[i].substring(1);
+        }
+        String benchmarks = mainClass.getName() + ".*" + methodName + "(" + String.join("|", marks) + ")";
         JMHRunnerConfig config = (JMHRunnerConfig) configuration;
         JMHRunnerConfig.JMHConfig jmhConfig = config.jmh();
         Options options = new OptionsBuilder()
@@ -160,8 +166,9 @@ public class RunnerHelper {
 
             String methodSuffixes = "";
             try {
-                if (invoker.enableMethodSuffix)
+                if (invoker.enableMethodSuffix) {
                     methodSuffixes = ReflectUtils.getField(configuration, "runs").toString();
+                }
             } catch (Exception ex) {
 
             }

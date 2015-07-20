@@ -3,11 +3,16 @@ package org.mds.harness2.tools.ignite;
 import org.apache.ignite.cache.CachePeekMode;
 import org.mds.harness.common2.runner.JMHInternalRunner;
 import org.mds.harness.common2.runner.JMHMainRunner;
+import org.mds.harness.model.ignite.CommonData;
+import org.mds.harness.model.ignite.IndexedData;
 import org.openjdk.jmh.annotations.Benchmark;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.ignite.Ignite;
@@ -16,18 +21,13 @@ import org.apache.ignite.IgniteCache;
 
 public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
 
-    public static class TestData {
-        private int id;
-        private long count;
-        private String name = "";
-    }
-
     private static class IgniteBenchSetup extends JMHInternalRunner<IgniteConfig> {
         Ignite ignite;
         IgniteCache igniteCache;
 
         @Override
         protected void setup(IgniteConfig config) {
+            log.info("Starting Ignite client ....");
             this.ignite = Ignition.start(config.cacheConfig);
             this.igniteCache = this.ignite.cache(config.cacheName);
         }
@@ -47,37 +47,57 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
 
         @Override
         protected void setup(IgniteConfig config) {
+            super.setup(config);
             byte[] bytes = new byte[config.length];
             for (int i = 0; i < bytes.length; i++) {
                 bytes[i] = 3;
             }
-            if (config.dataType.equalsIgnoreCase("string")) {
-                this.originValue = new String(bytes).intern();
-                isStringValue = true;
-            } else {
-                TestData testData = new TestData();
-                testData.name = new String(bytes).intern();
-                this.originValue = testData;
+            switch (config.dataType) {
+                case 0:
+                    this.originValue = new String(bytes).intern();
+                    isStringValue = true;
+                    break;
+                case 1:
+                    CommonData commonData = new CommonData();
+                    commonData.setName(new String(bytes).intern());
+                    this.originValue = commonData;
+                    break;
+                case 2:
+                    IndexedData indexedData = new IndexedData();
+                    indexedData.setName(new String(bytes).intern());
+                    this.originValue = indexedData;
+                    break;
             }
+
             this.prepareBaseData(config.baseCount);
         }
 
         private void prepareBaseData(int baseCount) {
             ExecutorService executor = Executors.newFixedThreadPool(4);
-            executor.execute(() -> {
-                int thisIndex = this.index.get();
-                while (thisIndex < baseCount) {
-                    if (index.compareAndSet(thisIndex, thisIndex++)) {
-                        igniteCache.put(thisIndex, this.originValue);
+            List<Future> tasks = new ArrayList<>();
+            for (int i = 0; i < 4; i++) {
+                tasks.add(executor.submit(() -> {
+                    int thisIndex = this.index.get();
+                    while (thisIndex < baseCount) {
+                        if (index.compareAndSet(thisIndex, ++thisIndex)) {
+                            igniteCache.put(thisIndex, this.originValue);
+                        }
                     }
+                }));
+            }
+            for (Future task : tasks) {
+                try {
+                    task.get();
+                } catch (Exception ex) {
+
                 }
-            });
+            }
             executor.shutdownNow();
         }
     }
 
     @Benchmark
-    public void benchInsert(PrepareData prepareData) {
+    public void benchPut(PrepareData prepareData) {
         int nextIndex = prepareData.index.incrementAndGet();
         prepareData.igniteCache.put(nextIndex, prepareData.originValue);
     }
@@ -99,9 +119,12 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
         int getIndex = prepareData.random.nextInt(prepareData.config().baseCount);
         prepareData.igniteCache.invoke(getIndex, (entry, objects) -> {
             Object value = entry.getValue();
-            if (value instanceof TestData) {
-                TestData data = (TestData) value;
-                data.count = 1;
+            if (value instanceof CommonData) {
+                CommonData data = (CommonData) value;
+                data.setName("");
+            } else if (value instanceof IndexedData) {
+                IndexedData data = (IndexedData) value;
+                data.setName("");
             }
             return null;
         });

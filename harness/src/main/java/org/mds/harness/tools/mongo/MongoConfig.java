@@ -42,7 +42,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Override
     public SimpleMongoDbFactory mongoDbFactory() throws Exception {
         try {
-            SimpleMongoDbFactory mongoDbFactory = super.mongoDbFactory();
+            SimpleMongoDbFactory mongoDbFactory = (SimpleMongoDbFactory)super.mongoDbFactory();
             DB db = mongoDbFactory.getDb(this.getDatabaseName());
             db.getCollectionNames();
             return mongoDbFactory;
