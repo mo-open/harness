@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
@@ -25,6 +26,7 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
     private static class IgniteBenchSetup extends JMHInternalRunner<IgniteConfig> {
         Ignite ignite;
         IgniteCache igniteCache;
+        AtomicLong counter = new AtomicLong();
 
         @Override
         protected void setup(IgniteConfig config) {
@@ -35,7 +37,7 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
 
         @Override
         protected void tearDown() {
-            log.info("Test finished, Current Cache size: " + this.igniteCache.size(CachePeekMode.PRIMARY));
+            log.info("Test finished,op counter:{}, Current Cache size: ", this.counter.get(), this.igniteCache.size(CachePeekMode.PRIMARY));
             this.ignite.close();
         }
     }
@@ -51,11 +53,12 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
             super.setup(config);
             byte[] bytes = new byte[config.length];
             for (int i = 0; i < bytes.length; i++) {
-                bytes[i] = 3;
+                bytes[i] = 'A';
             }
+
             this.stringValue = new String(bytes).intern();
             index = new AtomicInteger(config.baseCount);
-            maxIndex=new AtomicInteger(config.maxId);
+            maxIndex = new AtomicInteger(config.maxId);
             this.prepareBaseData(config.baseCount);
         }
 
@@ -113,7 +116,10 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
     @Benchmark
     public void benchGet(PrepareData prepareData) {
         int nextIndex = prepareData.random.nextInt(prepareData.maxIndex.get());
-        prepareData.igniteCache.get(String.valueOf(nextIndex));
+        Object o = prepareData.igniteCache.get(String.valueOf(nextIndex));
+        if (o != null) {
+            prepareData.counter.incrementAndGet();
+        }
     }
 
     @Benchmark
@@ -125,7 +131,7 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
     @Benchmark
     public void benchUpdate(PrepareData prepareData) {
         int getIndex = prepareData.random.nextInt(prepareData.config().maxId);
-        prepareData.igniteCache.invoke(getIndex, (entry, objects) -> {
+        prepareData.igniteCache.invoke(String.valueOf(getIndex), (entry, objects) -> {
             Object value = entry.getValue();
             if (value instanceof CommonData) {
                 CommonData data = (CommonData) value;
@@ -144,12 +150,13 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
         int getIndex = prepareData.random.nextInt(nextIndex);
         prepareData.igniteCache.put(String.valueOf(nextIndex), prepareData.createValue(nextIndex));
         prepareData.igniteCache.get(String.valueOf(getIndex));
+        prepareData.counter.incrementAndGet();
     }
 
     @Benchmark
     public void benchQuery(PrepareData prepareData) {
         int queryIndex = prepareData.random.nextInt(prepareData.maxIndex.get());
         SqlQuery<String, IndexedData> query = new SqlQuery<String, IndexedData>(IndexedData.class, "id=?").setArgs(queryIndex);
-        prepareData.igniteCache.query(query).getAll();
+        prepareData.counter.addAndGet(prepareData.igniteCache.query(query).getAll().size());
     }
 }
