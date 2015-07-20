@@ -24,7 +24,7 @@
             <directory>src/main/resources/conf</directory>
             <outputDirectory>/conf</outputDirectory>
             <includes>
-                <include>*.*</include>
+                <include>**</include>
             </includes>
         </fileSet>
     </fileSets>

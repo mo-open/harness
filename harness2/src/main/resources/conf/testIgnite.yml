@@ -9,6 +9,7 @@ jmh:
 runs: get
 count: 1000000
 baseCount: 1000000
+maxId: 100000
 length: 10
 #0: string, 1: common object, 2: indexed object
 dataType: 0

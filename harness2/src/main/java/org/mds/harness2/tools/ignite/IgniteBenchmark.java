@@ -1,6 +1,7 @@
 package org.mds.harness2.tools.ignite;
 
 import org.apache.ignite.cache.CachePeekMode;
+import org.apache.ignite.cache.query.SqlQuery;
 import org.mds.harness.common2.runner.JMHInternalRunner;
 import org.mds.harness.common2.runner.JMHMainRunner;
 import org.mds.harness.model.ignite.CommonData;
@@ -40,10 +41,9 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
     }
 
     public static class PrepareData extends IgniteBenchSetup {
-        Object originValue;
         AtomicInteger index = new AtomicInteger();
         Random random = new Random();
-        boolean isStringValue;
+        String stringValue;
 
         @Override
         protected void setup(IgniteConfig config) {
@@ -52,24 +52,25 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
             for (int i = 0; i < bytes.length; i++) {
                 bytes[i] = 3;
             }
-            switch (config.dataType) {
-                case 0:
-                    this.originValue = new String(bytes).intern();
-                    isStringValue = true;
-                    break;
-                case 1:
-                    CommonData commonData = new CommonData();
-                    commonData.setName(new String(bytes).intern());
-                    this.originValue = commonData;
-                    break;
-                case 2:
-                    IndexedData indexedData = new IndexedData();
-                    indexedData.setName(new String(bytes).intern());
-                    this.originValue = indexedData;
-                    break;
-            }
+            this.stringValue = new String(bytes).intern();
 
             this.prepareBaseData(config.baseCount);
+        }
+
+        private Object createValue(int index) {
+            switch (config.dataType) {
+                case 0:
+                    return this.stringValue + index;
+                case 1:
+                    CommonData commonData = new CommonData();
+                    commonData.setName(this.stringValue + index);
+                    return commonData;
+                case 2:
+                    IndexedData indexedData = new IndexedData();
+                    indexedData.setName(this.stringValue + index);
+                    return indexedData;
+            }
+            return "";
         }
 
         private void prepareBaseData(int baseCount) {
@@ -80,7 +81,7 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
                     int thisIndex = this.index.get();
                     while (thisIndex < baseCount) {
                         if (index.compareAndSet(thisIndex, ++thisIndex)) {
-                            igniteCache.put(thisIndex, this.originValue);
+                            igniteCache.put(String.valueOf(thisIndex), this.createValue(thisIndex));
                         }
                     }
                 }));
@@ -99,19 +100,22 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
     @Benchmark
     public void benchPut(PrepareData prepareData) {
         int nextIndex = prepareData.index.incrementAndGet();
-        prepareData.igniteCache.put(nextIndex, prepareData.originValue);
+        if (nextIndex > prepareData.config().maxId) {
+            nextIndex = prepareData.random.nextInt(prepareData.index.get());
+        }
+        prepareData.igniteCache.put(String.valueOf(nextIndex), prepareData.createValue(nextIndex));
     }
 
     @Benchmark
     public void benchGet(PrepareData prepareData) {
-        int nextIndex = prepareData.index.decrementAndGet();
-        prepareData.igniteCache.get(nextIndex);
+        int nextIndex = prepareData.random.nextInt(prepareData.index.get());
+        prepareData.igniteCache.get(String.valueOf(nextIndex));
     }
 
     @Benchmark
     public void benchRemove(PrepareData prepareData) {
         int nextIndex = prepareData.index.decrementAndGet();
-        prepareData.igniteCache.remove(nextIndex);
+        prepareData.igniteCache.remove(String.valueOf(nextIndex));
     }
 
     @Benchmark
@@ -121,10 +125,10 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
             Object value = entry.getValue();
             if (value instanceof CommonData) {
                 CommonData data = (CommonData) value;
-                data.setName("");
+                data.setName(data.getName() + getIndex);
             } else if (value instanceof IndexedData) {
                 IndexedData data = (IndexedData) value;
-                data.setName("");
+                data.setName(data.getName() + getIndex);
             }
             return null;
         });
@@ -134,7 +138,14 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
     public void benchInsertAndGet(PrepareData prepareData) {
         int nextIndex = prepareData.index.incrementAndGet();
         int getIndex = prepareData.random.nextInt(nextIndex);
-        prepareData.igniteCache.put(nextIndex, prepareData.originValue);
-        prepareData.igniteCache.get(getIndex);
+        prepareData.igniteCache.put(String.valueOf(nextIndex), prepareData.createValue(nextIndex));
+        prepareData.igniteCache.get(String.valueOf(getIndex));
+    }
+
+    @Benchmark
+    public void benchQuery(PrepareData prepareData) {
+        int queryIndex = prepareData.random.nextInt(prepareData.index.get());
+        SqlQuery<String, IndexedData> query = new SqlQuery<String, IndexedData>(IndexedData.class, "id=?").setArgs(queryIndex);
+        prepareData.igniteCache.query(query).getAll();
     }
 }
