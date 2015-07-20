@@ -65,10 +65,12 @@ public class IgniteBenchmark extends JMHMainRunner<IgniteConfig> {
                     return this.stringValue + index;
                 case 1:
                     CommonData commonData = new CommonData();
+                    commonData.setId(index);
                     commonData.setName(this.stringValue + index);
                     return commonData;
                 case 2:
                     IndexedData indexedData = new IndexedData();
+                    indexedData.setId(index);
                     indexedData.setName(this.stringValue + index);
                     return indexedData;
             }
