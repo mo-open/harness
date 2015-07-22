@@ -30,7 +30,7 @@
         <hprocessor.version>1.0.0</hprocessor.version>
         <harness.version>1.0.0</harness.version>
         <hls-lib.version>1.0.0</hls-lib.version>
-        <netty.version>4.0.13.Final</netty.version>
+        <netty.version>4.0.28.Final</netty.version>
         <jedis.version>2.4.2</jedis.version>
         <commons-lang3.version>3.2</commons-lang3.version>
         <refactor-spring.version>1.0.1.RELEASE</refactor-spring.version>
