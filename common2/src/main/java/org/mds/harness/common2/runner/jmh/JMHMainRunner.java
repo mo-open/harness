@@ -1,4 +1,4 @@
-package org.mds.harness.common2.runner;
+package org.mds.harness.common2.runner.jmh;
 
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.BenchmarkParams;

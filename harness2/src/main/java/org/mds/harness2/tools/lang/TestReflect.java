@@ -1,14 +1,13 @@
 package org.mds.harness2.tools.lang;
 
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
-import org.mds.harness.common2.runner.RunnerHelper;
+import org.mds.harness.common2.runner.dsm.DsmRunner;
+import org.mds.harness.common2.runner.dsm.DsmRunnerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
-public class TestReflect {
+public class TestReflect extends DsmRunner<DsmRunnerConfig> {
     private final static Logger log = LoggerFactory.getLogger(TestReflect.class);
     private static String S = "";
 
@@ -16,11 +15,11 @@ public class TestReflect {
         return "fdjkfldlf" + line;
     }
 
-    public void runReflect1(PerfConfig configuration) throws Exception {
+    public void runReflect1(DsmRunnerConfig configuration) throws Exception {
         log.info("Start test .....");
         final Method method = this.getClass().getMethod("newTag", new Class[]{String.class});
-        PerfTester<PerfTester.SingleTask> perfTester = new PerfTester("Test reflect 1", configuration);
-        perfTester.run((PerfConfig conf, Integer index) -> {
+
+        this.runSingle("Test reflect 1", configuration, (configuration1, index1) -> {
             try {
                 method.invoke(TestReflect.class, "");
             } catch (Exception ex) {
@@ -30,10 +29,9 @@ public class TestReflect {
         });
     }
 
-    public void runReflect2(PerfConfig configuration) throws Exception {
+    public void runReflect2(DsmRunnerConfig configuration) throws Exception {
         log.info("Start test .....");
-        PerfTester<PerfTester.SingleTask> perfTester = new PerfTester("Test reflect 2", configuration);
-        perfTester.run((PerfConfig conf, Integer index) -> {
+        this.runSingle("Test reflect 2", configuration, (configuration1, index1) -> {
             try {
                 Method method = TestReflect.class.getMethod("newTag", new Class[]{String.class});
                 method.invoke(TestReflect.class, "");
@@ -44,10 +42,9 @@ public class TestReflect {
         });
     }
 
-    public void runNormal(PerfConfig configuration) throws Exception {
+    public void runNormal(DsmRunnerConfig configuration) throws Exception {
         log.info("Start test .....");
-        PerfTester<PerfTester.SingleTask> perfTester = new PerfTester("Test normal", configuration);
-        perfTester.run((PerfConfig conf, Integer index) -> {
+        this.runSingle("Test Normal", configuration, (configuration1, index1) -> {
             try {
                 TestReflect.newTag("");
             } catch (Exception ex) {
@@ -55,14 +52,5 @@ public class TestReflect {
             }
             return 1;
         });
-    }
-
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(TestReflect.class)
-                .setConfigClass(PerfConfig.class)
-                .setConfigFile("testReglect.yml")
-                .invoke();
     }
 }

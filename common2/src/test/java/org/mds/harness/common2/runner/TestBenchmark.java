@@ -1,5 +1,7 @@
 package org.mds.harness.common2.runner;
 
+import org.mds.harness.common2.runner.jmh.JMHInternalRunner;
+import org.mds.harness.common2.runner.jmh.JMHMainRunner;
 import org.openjdk.jmh.annotations.*;
 
 public class TestBenchmark extends JMHMainRunner<TestConfig> {

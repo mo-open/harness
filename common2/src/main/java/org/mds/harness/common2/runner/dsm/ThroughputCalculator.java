@@ -1,4 +1,4 @@
-package org.mds.harness.common2.perf;
+package org.mds.harness.common2.runner.dsm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +15,11 @@ public class ThroughputCalculator {
     protected final static Logger log = LoggerFactory.getLogger(ThroughputCalculator.class);
     AtomicLong counter;
     ExecutorService executorService = Executors.newFixedThreadPool(1);
-    PerfConfig configuration;
+    DsmRunnerConfig configuration;
     Future task = null;
     String name = "";
 
-    public ThroughputCalculator(String name, PerfConfig configuration, AtomicLong counter) {
+    public ThroughputCalculator(String name, DsmRunnerConfig configuration, AtomicLong counter) {
         this.name = name;
         this.configuration = configuration;
         this.counter = counter;

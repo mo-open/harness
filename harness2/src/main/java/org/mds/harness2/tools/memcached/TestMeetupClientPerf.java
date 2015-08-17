@@ -3,9 +3,7 @@ package org.mds.harness2.tools.memcached;
 import com.meetup.memcached.SockIOPool;
 import com.meetup.memcached.MemcachedClient;
 import org.apache.commons.lang3.StringUtils;
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
-import org.mds.harness.common2.runner.RunnerHelper;
+import org.mds.harness.common2.runner.dsm.DsmRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +13,7 @@ import java.util.List;
 /**
  * Created by modongsong on 14-4-1.
  */
-public class TestMeetupClientPerf {
+public class TestMeetupClientPerf extends DsmRunner<TestMemcachedConfiguration> {
     private final static Logger log = LoggerFactory.getLogger(TestMeetupClientPerf.class);
 
     private static String KEY_PREFIX = "key-";
@@ -44,21 +42,21 @@ public class TestMeetupClientPerf {
     }
 
     public void runSet(final TestMemcachedConfiguration conf) {
-        new PerfTester("Meetup  memcache client Perftest", conf).run((config, index) -> {
+        this.runSingle("Test Set of MeetupMemcacheClient", conf, (configuration1, index) -> {
             memcachedClient.set(KEY_PREFIX + index, DATA_PREFIX + index, 10000);
             return 1;
         });
     }
 
     public void runGet(final TestMemcachedConfiguration conf) {
-        new PerfTester("Meetup  memcache client Perftest", conf).run((config, index) -> {
+        this.runSingle("Test Get of MeetupMemcacheClient", conf, (configuration1, index) -> {
             memcachedClient.get(KEY_PREFIX + index);
             return 1;
         });
     }
 
     public void runGetBulk(final TestMemcachedConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Meetup  memcache client Perftest", conf).run((config, indexes) -> {
+        this.runBatch("Test Set of MeetupMemcacheClient", conf, (configuration1, indexes) -> {
             List<String> keys = new ArrayList<String>();
             for (Long index : indexes) {
                 keys.add(KEY_PREFIX + index);
@@ -66,14 +64,5 @@ public class TestMeetupClientPerf {
             memcachedClient.getMultiArray(keys.toArray(new String[]{}));
             return 1;
         });
-    }
-
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(TestMeetupClientPerf.class)
-                .setConfigClass(TestMemcachedConfiguration.class)
-                .setConfigFile("testMemcached.yml")
-                .invoke();
     }
 }

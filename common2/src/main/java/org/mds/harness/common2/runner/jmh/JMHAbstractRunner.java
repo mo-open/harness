@@ -1,4 +1,4 @@
-package org.mds.harness.common2.runner;
+package org.mds.harness.common2.runner.jmh;
 
 import org.apache.commons.lang3.StringUtils;
 import org.mds.harness.common2.config.ConfigurationHelper;

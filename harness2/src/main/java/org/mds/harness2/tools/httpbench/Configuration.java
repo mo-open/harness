@@ -1,12 +1,12 @@
 package org.mds.harness2.tools.httpbench;
 
 
-import org.mds.harness.common2.perf.PerfConfig;
+import org.mds.harness.common2.runner.dsm.DsmRunnerConfig;
 
 /**
  * @author Dongsong
  */
-public class Configuration extends PerfConfig {
+public class Configuration extends DsmRunnerConfig {
     public String httpURL = "";
     public String host = "";
     public int maxThreshold = 100;

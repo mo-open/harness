@@ -1,11 +1,11 @@
 package org.mds.harness2.tools.mapdb;
 
-import org.mds.harness.common2.perf.PerfConfig;
+import org.mds.harness.common2.runner.dsm.DsmRunnerConfig;
 
 /**
  * Created by modongsong on 2015/4/22.
  */
-public class TestMapDBConfig extends PerfConfig {
+public class TestMapDBConfig extends DsmRunnerConfig {
     public double maxSizeInG = 0.1;
     public String storeType = "dmem";
     public String storeFile = "/tmp/mapdb";

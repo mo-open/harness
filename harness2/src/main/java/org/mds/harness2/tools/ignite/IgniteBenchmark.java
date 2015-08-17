@@ -2,8 +2,8 @@ package org.mds.harness2.tools.ignite;
 
 import org.apache.ignite.cache.CachePeekMode;
 import org.apache.ignite.cache.query.SqlQuery;
-import org.mds.harness.common2.runner.JMHInternalRunner;
-import org.mds.harness.common2.runner.JMHMainRunner;
+import org.mds.harness.common2.runner.jmh.JMHInternalRunner;
+import org.mds.harness.common2.runner.jmh.JMHMainRunner;
 import org.mds.harness.model.ignite.CommonData;
 import org.mds.harness.model.ignite.IndexedData;
 import org.openjdk.jmh.annotations.Benchmark;

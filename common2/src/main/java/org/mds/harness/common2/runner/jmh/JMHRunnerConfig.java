@@ -1,5 +1,6 @@
-package org.mds.harness.common2.runner;
+package org.mds.harness.common2.runner.jmh;
 
+import org.mds.harness.common2.runner.ARunnerConfig;
 import org.openjdk.jmh.annotations.Mode;
 
 public abstract class JMHRunnerConfig extends ARunnerConfig {

@@ -6,10 +6,8 @@ import net.rubyeye.xmemcached.command.BinaryCommandFactory;
 import net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator;
 import net.rubyeye.xmemcached.transcoders.SerializingTranscoder;
 import org.apache.commons.lang3.StringUtils;
+import org.mds.harness.common2.runner.dsm.DsmRunner;
 import org.mds.hprocessor.memcache.*;
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
-import org.mds.harness.common2.runner.RunnerHelper;
 import org.mds.hprocessor.memcache.utils.MemcacheClientUtils;
 import org.mds.hprocessor.memcache.utils.MemcacheConfig;
 import org.slf4j.Logger;
@@ -19,7 +17,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class TestXMemcachedPerf {
+public class TestXMemcachedPerf extends DsmRunner<TestMemcachedConfiguration>{
     private final static Logger log = LoggerFactory.getLogger(TestXMemcachedPerf.class);
 
     private static String KEY_PREFIX = "key-";
@@ -50,46 +48,43 @@ public class TestXMemcachedPerf {
     }
 
     public void runSet(final TestMemcachedConfiguration conf) {
-        new PerfTester<PerfTester.SingleTask>("Meetup  memcache client Perftest", conf).run(
-                (config, index) -> {
-                    try {
-                        int vIndex = index % conf.itemCount;
-                        memcachedClient.set(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex);
-                    } catch (Exception ex) {
+        this.runSingle("Test Set of xmemcached", conf, (configuration1, index) -> {
+            try {
+                int vIndex = index % conf.itemCount;
+                memcachedClient.set(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex);
+            } catch (Exception ex) {
 
-                    }
-                    return 1;
-                });
+            }
+            return 1;
+        });
     }
 
     public void runAsyncSet(final TestMemcachedConfiguration conf) {
-        new PerfTester<PerfTester.SingleTask>("Meetup  memcache client Perftest", conf).run(
-                (config, index) -> {
-                    try {
-                        int vIndex = index % conf.itemCount;
-                        memcachedClient.setWithNoReply(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex);
-                    } catch (Exception ex) {
+        this.runSingle("Test asyncSet of xmemcached", conf, (configuration1, index) -> {
+            try {
+                int vIndex = index % conf.itemCount;
+                memcachedClient.setWithNoReply(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex);
+            } catch (Exception ex) {
 
-                    }
-                    return 1;
-                });
+            }
+            return 1;
+        });
     }
 
     public void runDSet(final TestMemcachedConfiguration conf) {
-        new PerfTester<PerfTester.SingleTask>("Meetup  memcache client Perftest", conf).run(
-                (config, index) -> {
-                    try {
-                        int vIndex = index % conf.itemCount;
-                        memcachedClient.setWithNoReply(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex);
-                    } catch (Exception ex) {
+        this.runSingle("Test DSet of xmemcached", conf, (configuration1, index) -> {
+            try {
+                int vIndex = index % conf.itemCount;
+                memcachedClient.setWithNoReply(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex);
+            } catch (Exception ex) {
 
-                    }
-                    return 1;
-                });
+            }
+            return 1;
+        });
     }
 
     public void runGet(final TestMemcachedConfiguration conf) {
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run((config, index) -> {
+        this.runSingle("Test Get of xmemcached", conf, (configuration1, index) -> {
             try {
                 int vIndex = index % conf.itemCount;
                 memcachedClient.get(KEY_PREFIX + vIndex);
@@ -101,19 +96,18 @@ public class TestXMemcachedPerf {
     }
 
     public void runGetBulk(final TestMemcachedConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Http Sync Perftest", conf).run(
-                (config, indexes) -> {
-                    List<String> keys = new ArrayList<String>();
-                    for (Long index : indexes) {
-                        keys.add(KEY_PREFIX + index % conf.itemCount);
-                    }
-                    try {
-                        memcachedClient.get(keys);
-                    } catch (Exception ex) {
+        this.runBatch("Test Set of xmemcached", conf, (configuration1, indexes) -> {
+            List<String> keys = new ArrayList<String>();
+            for (Long index : indexes) {
+                keys.add(KEY_PREFIX + index % conf.itemCount);
+            }
+            try {
+                memcachedClient.get(keys);
+            } catch (Exception ex) {
 
-                    }
-                    return indexes.size();
-                });
+            }
+            return indexes.size();
+        });
     }
 
     public void runGetter(final TestMemcachedConfiguration conf) {
@@ -129,7 +123,7 @@ public class TestXMemcachedPerf {
                 .setCache(conf.enableCache ? memcacheCache : null)
                 .build();
         final AtomicLong counter = new AtomicLong();
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run((config, index) -> {
+        this.runSingle("Test Getter of xmemcached", conf, (configuration1, index) -> {
             int vIndex = index % conf.itemCount;
             getProcessor.get(KEY_PREFIX + vIndex, new MemcacheGetProcessor.GetCallback() {
                 @Override
@@ -161,7 +155,7 @@ public class TestXMemcachedPerf {
                 .setProcessorType(conf.getterType == 0 ? MemcacheProcessor.ProcessorType.DISRUPTOR : MemcacheSetProcessor.ProcessorType.QUEUE)
                 .setSetters(setters).build();
         final AtomicLong counter = new AtomicLong();
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run((config, index) -> {
+        this.runSingle("Test Setter of xmemcached", conf, (configuration1, index) -> {
             int vIndex = index % conf.itemCount;
             setProcessor.set(KEY_PREFIX + vIndex, 100000, DATA_PREFIX + vIndex,
                     new MemcacheSetProcessor.SetCallback() {
@@ -177,14 +171,5 @@ public class TestXMemcachedPerf {
                     });
             return 0;
         }, counter);
-    }
-
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(TestXMemcachedPerf.class)
-                .setConfigClass(TestMemcachedConfiguration.class)
-                .setConfigFile("testMemcached.yml")
-                .invoke();
     }
 }

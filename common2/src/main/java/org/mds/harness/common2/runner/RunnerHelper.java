@@ -1,9 +1,9 @@
 package org.mds.harness.common2.runner;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.mds.harness.common2.config.ConfigurationHelper;
 import org.mds.harness.common2.reflect.ReflectUtils;
+import org.mds.harness.common2.runner.jmh.JMHRunnerConfig;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
@@ -12,9 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -162,7 +160,6 @@ public class RunnerHelper {
 
             Object configuration = ConfigurationHelper.loadConfiguration(invoker.args, invoker.mainClass, invoker.configClass, invoker.configFile);
             log.info(String.format("Start,Arguments:" + ConfigurationHelper.argumentsString(configuration)));
-
 
             String methodSuffixes = "";
             try {

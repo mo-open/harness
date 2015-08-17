@@ -1,6 +1,6 @@
 package org.mds.harness2.tools.ignite;
 
-import org.mds.harness.common2.runner.JMHRunnerConfig;
+import org.mds.harness.common2.runner.jmh.JMHRunnerConfig;
 
 public class IgniteConfig extends JMHRunnerConfig {
     public int count;

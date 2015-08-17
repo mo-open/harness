@@ -1,20 +1,18 @@
 package org.mds.harness2.tools.lang;
 
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
-import org.mds.harness.common2.runner.RunnerHelper;
+import org.mds.harness.common2.runner.dsm.DsmRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Created by modongsong on 14-7-2.
  */
-public class TestSystem {
+public class TestSystem extends DsmRunner<SystemConfiguration> {
     private final static Logger log = LoggerFactory.getLogger(TestSystem.class);
 
     public void runSysTime(final SystemConfiguration conf) throws Exception {
         log.info("Start test .....");
-        new PerfTester("Test SysTime", conf).run((config, index) -> {
+        this.runSingle("Test SysTime", conf, (configuration1, index1) -> {
             try {
                 for (int i = 0; i < conf.times; i++) {
                     System.currentTimeMillis();
@@ -26,12 +24,4 @@ public class TestSystem {
         });
     }
 
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(TestSystem.class)
-                .setConfigClass(SystemConfiguration.class)
-                .setConfigFile("system.yml")
-                .invoke();
-    }
 }

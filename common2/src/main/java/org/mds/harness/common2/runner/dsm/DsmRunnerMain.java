@@ -1,12 +1,14 @@
-package org.mds.harness.common2.runner;
+package org.mds.harness.common2.runner.dsm;
 
-public class JMHRunnerMain {
+import org.mds.harness.common2.runner.RunnerHelper;
+
+public class DsmRunnerMain {
     public static void main(String[] args) throws Exception {
         String className = args[0];
         RunnerHelper.newInvoker()
                 .setArgs(args)
                 .setMainClassName(className)
                 .setJMH(true)
-                .setMethodName("bench").invoke();
+                .setMethodName("run").invoke();
     }
 }

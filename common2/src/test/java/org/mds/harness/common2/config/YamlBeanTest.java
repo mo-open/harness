@@ -1,10 +1,7 @@
 package org.mds.harness.common2.config;
 
-import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
-import org.mds.harness.common2.perf.PerfConfig;
 
-import java.io.FileReader;
 import java.io.InputStreamReader;
 
 /**

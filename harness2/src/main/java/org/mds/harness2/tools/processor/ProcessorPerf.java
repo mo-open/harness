@@ -1,17 +1,14 @@
 package org.mds.harness2.tools.processor;
 
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
+import org.mds.harness.common2.runner.dsm.DsmRunner;
 import org.mds.hprocessor.processor.*;
-import org.mds.harness.common2.runner.RunnerHelper;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Dongsong
  */
-public class ProcessorPerf {
+public class ProcessorPerf extends DsmRunner<ProcessorConfiguration> {
 
     public void runDProcessor1(final ProcessorConfiguration conf) {
         final AtomicLong counter = new AtomicLong();
@@ -21,7 +18,7 @@ public class ProcessorPerf {
                                 value -> {
                                     counter.incrementAndGet();
                                 }).build();
-        new PerfTester<PerfTester.SingleTask>("Disruptor processor", conf).run((config, index) -> {
+        this.runSingle("Test DProcessor1", conf, (configuration1, index) -> {
             disruptorProcessor.submit(index);
             return 1;
         }, counter);
@@ -41,7 +38,7 @@ public class ProcessorPerf {
                                 value -> {
                                     counter.incrementAndGet();
                                 }).build();
-        new PerfTester<PerfTester.SingleTask>("Disruptor processor", conf).run((config, index) -> {
+        this.runSingle("Test DProcessor2", conf, (configuration1, index) -> {
             disruptorProcessor.submit(index);
             return 1;
         }, counter);
@@ -61,7 +58,7 @@ public class ProcessorPerf {
                                 value -> {
                                     counter.incrementAndGet();
                                 }).build();
-        new PerfTester<PerfTester.SingleTask>("Disruptor processor", conf).run((config, index) -> {
+        this.runSingle("Test Dprocessor3", conf, (configuration1, index) -> {
             disruptorProcessor.submit(index);
             return 1;
         }, counter);
@@ -78,7 +75,7 @@ public class ProcessorPerf {
                                 counter.incrementAndGet();
                             }
                         }).build();
-        new PerfTester<PerfTester.SingleTask>("Disruptor processor", conf).run((config, index) -> {
+        this.runSingle("Test DBProcessor1", conf, (configuration1, index) -> {
             disruptorProcessor.submit(index);
             return 1;
         }, counter);
@@ -96,7 +93,7 @@ public class ProcessorPerf {
                         .addNext(2, value -> {
                             counter.incrementAndGet();
                         }).build();
-        new PerfTester<PerfTester.SingleTask>("Disruptor processor", conf).run((config, index) -> {
+        this.runSingle("Test DBProcessor2", conf, (configuration1, index) -> {
             disruptorProcessor.submit(index);
             return 1;
         }, counter);
@@ -109,7 +106,7 @@ public class ProcessorPerf {
                         value -> {
                             counter.incrementAndGet();
                         }).build();
-        new PerfTester<PerfTester.SingleTask>("Disruptor processor", conf).run((config, index) -> {
+        this.runSingle("Test QProcessor", conf, (configuration1, index) -> {
             blockingQueueProcessor.submit(index);
             return 1;
         }, counter);
@@ -127,18 +124,9 @@ public class ProcessorPerf {
                 .addNext(conf.workerCount, value -> {
                     counter.incrementAndGet();
                 }).build();
-        new PerfTester<PerfTester.SingleTask>("Disruptor processor", conf).run((config, index) -> {
+        this.runSingle("Test QProcessor2", conf, (configuration1, index) -> {
             processor.submit(index);
             return 1;
         }, counter);
-    }
-
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(ProcessorPerf.class)
-                .setConfigClass(ProcessorConfiguration.class)
-                .setConfigFile("processor.yml")
-                .invoke();
     }
 }

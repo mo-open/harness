@@ -1,18 +1,17 @@
 package org.mds.harness.common2.config;
 
-import org.mds.harness.common2.perf.PerfConfig;
+import org.mds.harness.common2.runner.dsm.DsmRunnerConfig;
 import org.testng.annotations.Test;
 
 import java.util.Properties;
 
-import static org.testng.Assert.*;
 import static org.testng.Assert.assertEquals;
 
 /**
  * Created by Randall.mo on 14-4-18.
  */
 public class ConfigurationHelperTest {
-    static public class TestConfiguration extends PerfConfig {
+    static public class TestConfiguration extends DsmRunnerConfig {
         public int field_1;
         public String field_2;
         public String field_3;

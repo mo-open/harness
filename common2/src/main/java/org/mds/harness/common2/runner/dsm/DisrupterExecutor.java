@@ -1,7 +1,6 @@
-package org.mds.harness.common2.perf;
+package org.mds.harness.common2.runner.dsm;
 
 import org.mds.hprocessor.processor.DisruptorProcessor;
-import org.mds.hprocessor.processor.ProcessorHandler;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -9,12 +8,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by modongsong on 2015/4/21.
  */
 public class DisrupterExecutor extends TestExecutor {
-    protected DisrupterExecutor(PerfConfig configuration, AtomicLong iCounter, int batchSize) {
+    protected DisrupterExecutor(DsmRunnerConfig configuration, AtomicLong iCounter, int batchSize) {
         super(configuration, iCounter, batchSize);
     }
 
     @Override
-    public void run(PerfTester.Task task) {
+    public void run(DsmRunner.Task task) {
         if (iCounter == null) {
             iCounter = new AtomicLong();
         }

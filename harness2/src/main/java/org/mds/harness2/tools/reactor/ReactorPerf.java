@@ -1,9 +1,6 @@
 package org.mds.harness2.tools.reactor;
 
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
-import org.mds.harness.common2.runner.RunnerHelper;
-import org.mds.harness2.tools.processor.ProcessorConfiguration;
+import org.mds.harness.common2.runner.dsm.DsmRunner;
 import reactor.core.Environment;
 import reactor.core.Reactor;
 import reactor.core.processor.Operation;
@@ -11,8 +8,6 @@ import reactor.core.processor.Processor;
 import reactor.core.processor.spec.ProcessorSpec;
 import reactor.core.spec.Reactors;
 import reactor.event.Event;
-import reactor.function.Consumer;
-import reactor.function.Supplier;
 
 import static reactor.event.selector.Selectors.$;
 
@@ -23,7 +18,7 @@ import java.util.concurrent.locks.LockSupport;
 /**
  * Created by modongsong on 2015/1/28.
  */
-public class ReactorPerf {
+public class ReactorPerf extends DsmRunner<ReactorConfig> {
     private Reactor createReactor(final ReactorConfig conf) {
         String type = Environment.EVENT_LOOP;
         switch (conf.reactorType) {
@@ -60,14 +55,13 @@ public class ReactorPerf {
                     counter.incrementAndGet();
                 }).get();
 
-        new PerfTester<PerfTester.SingleTask>("Disruptor processor", conf).run(
-                (config, index) -> {
-                    Operation<Frame> op = processor.prepare();
-                    Frame f = op.get();
-                    f.type = index;
-                    op.commit();
-                    return 1;
-                }, counter);
+        this.runSingle("Test Disruptor Processor", conf, (configuration1, index) -> {
+            Operation<Frame> op = processor.prepare();
+            Frame f = op.get();
+            f.type = index;
+            op.commit();
+            return 1;
+        }, counter);
     }
 
     public void runReactor(final ReactorConfig conf) {
@@ -88,18 +82,9 @@ public class ReactorPerf {
 
         final Random random = new Random();
 
-        new PerfTester("Disruptor processor", conf).run((config, index) -> {
+        this.runSingle("Test Reactor", conf, (configuration1, index) -> {
             reactor.notify(random.nextInt(conf.eventCount), Event.wrap(index));
             return 1;
         }, counter);
-    }
-
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(ReactorPerf.class)
-                .setConfigClass(ReactorConfig.class)
-                .setConfigFile("reactor.yml")
-                .invoke();
     }
 }

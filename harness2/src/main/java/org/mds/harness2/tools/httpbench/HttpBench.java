@@ -2,6 +2,7 @@ package org.mds.harness2.tools.httpbench;
 
 import com.ning.http.client.*;
 
+import org.mds.harness.common2.runner.dsm.DsmRunner;
 import org.mds.hprocessor.processor.*;
 import org.mds.video.hls.model.M3uPlayList;
 import org.mds.video.hls.model.tags.ExtInfTag;
@@ -26,8 +27,6 @@ import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.util.EntityUtils;
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
 import org.mds.harness.common2.runner.RunnerHelper;
 import org.mds.harness2.utils.TestHelper;
 import org.slf4j.Logger;
@@ -37,7 +36,6 @@ import java.io.*;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -45,7 +43,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Dongsong
  */
-public class HttpBench {
+public class HttpBench extends DsmRunner<Configuration> {
     protected final static Logger log = LoggerFactory.getLogger(HttpBench.class);
 
     //private static ExecutorService executorService=Executors.newFixedThreadPool(300);
@@ -178,9 +176,9 @@ public class HttpBench {
 
                 }).build();
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run((PerfConfig configuration, Integer index) -> {
+        this.runSingle("Http Sync Perftest", conf, (configuration, index) -> {
                     try {
-                        EventValue eventValue = new EventValue(index);
+                        EventValue eventValue = new EventValue((int) index);
                         if (!conf.returnStream) {
                             eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
                         } else {
@@ -194,8 +192,8 @@ public class HttpBench {
                     }
 
                     return 1;
-                },
-                finishedCounter);
+                }, finishedCounter
+        );
     }
 
     public void runDisruptorPipeline2(final Configuration conf) {
@@ -226,25 +224,23 @@ public class HttpBench {
                     }
                 }).build();
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run(
-                (PerfConfig configuration, Integer index) -> {
-                    try {
-                        EventValue eventValue = new EventValue(index);
-                        if (!conf.returnStream) {
-                            eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
-                        } else {
-                            eventValue.inputStream = TestHelper.getStream(3000, new URI(conf.httpURL));
-                        }
-                        processor.submit(eventValue);
-                    } catch (Exception e) {
-                        log.error("Failed to request: " + conf.httpURL + ", " + e);
-                    } finally {
-                        // Release the connection.
-                    }
+        this.runSingle("Http Sync Perftest", conf, (configuration, index) -> {
+            try {
+                EventValue eventValue = new EventValue((int) index);
+                if (!conf.returnStream) {
+                    eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
+                } else {
+                    eventValue.inputStream = TestHelper.getStream(3000, new URI(conf.httpURL));
+                }
+                processor.submit(eventValue);
+            } catch (Exception e) {
+                log.error("Failed to request: " + conf.httpURL + ", " + e);
+            } finally {
+                // Release the connection.
+            }
 
-                    return 1;
-                },
-                finishedCounter);
+            return 1;
+        }, finishedCounter);
     }
 
     public void runQueuePipeline1(final Configuration conf) {
@@ -282,24 +278,23 @@ public class HttpBench {
                     }
                 }).build();
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run(
-                (PerfConfig configuration, Integer index) -> {
-                    try {
-                        EventValue eventValue = new EventValue(index);
-                        if (!conf.returnStream) {
-                            eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
-                        } else {
-                            eventValue.inputStream = TestHelper.getStream(3000, new URI(conf.httpURL));
-                        }
-                        processor.submit(eventValue);
-                    } catch (Exception e) {
-                        log.error("Failed to request: " + conf.httpURL + ", " + e);
-                    } finally {
-                        // Release the connection.
-                    }
+        this.runSingle("Http Sync Perftest", conf, (configuration, index) -> {
+            try {
+                EventValue eventValue = new EventValue((int) index);
+                if (!conf.returnStream) {
+                    eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
+                } else {
+                    eventValue.inputStream = TestHelper.getStream(3000, new URI(conf.httpURL));
+                }
+                processor.submit(eventValue);
+            } catch (Exception e) {
+                log.error("Failed to request: " + conf.httpURL + ", " + e);
+            } finally {
+                // Release the connection.
+            }
 
-                    return 1;
-                }, finishedCounter);
+            return 1;
+        }, finishedCounter);
     }
 
     public void runQueuePipeline2(final Configuration conf) {
@@ -328,24 +323,23 @@ public class HttpBench {
                             }
                         }).build();
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run(
-                (PerfConfig configuration, Integer index) -> {
-                    try {
-                        EventValue eventValue = new EventValue(index);
-                        if (!conf.returnStream) {
-                            eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
-                        } else {
-                            eventValue.inputStream = TestHelper.getStream(3000, new URI(conf.httpURL));
-                        }
-                        processor.submit(eventValue);
-                    } catch (Exception e) {
-                        log.error("Failed to request: " + conf.httpURL + ", " + e);
-                    } finally {
-                        // Release the connection.
-                    }
+        this.runSingle("Http Sync Perftest", conf, (configuration, index) -> {
+            try {
+                EventValue eventValue = new EventValue((int) index);
+                if (!conf.returnStream) {
+                    eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
+                } else {
+                    eventValue.inputStream = TestHelper.getStream(3000, new URI(conf.httpURL));
+                }
+                processor.submit(eventValue);
+            } catch (Exception e) {
+                log.error("Failed to request: " + conf.httpURL + ", " + e);
+            } finally {
+                // Release the connection.
+            }
 
-                    return 1;
-                }, finishedCounter);
+            return 1;
+        }, finishedCounter);
     }
 
     public void runDisruptorPipeline3(final Configuration conf) {
@@ -382,24 +376,23 @@ public class HttpBench {
                     }
                 }).build();
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run(
-                (PerfConfig configuration, Integer index) -> {
-                    try {
-                        EventValue eventValue = new EventValue(index);
-                        if (!conf.returnStream) {
-                            eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
-                        } else {
-                            eventValue.inputStream = TestHelper.getStream(3000, new URI(conf.httpURL));
-                        }
-                        processor.submit(eventValue);
-                    } catch (Exception e) {
-                        log.error("Failed to request: " + conf.httpURL + ", " + e);
-                    } finally {
-                        // Release the connection.
-                    }
+        this.runSingle("Http Sync Perftest", conf, (configuration, index) -> {
+            try {
+                EventValue eventValue = new EventValue((int) index);
+                if (!conf.returnStream) {
+                    eventValue.content = TestHelper.getUri(3000, new URI(conf.httpURL));
+                } else {
+                    eventValue.inputStream = TestHelper.getStream(3000, new URI(conf.httpURL));
+                }
+                processor.submit(eventValue);
+            } catch (Exception e) {
+                log.error("Failed to request: " + conf.httpURL + ", " + e);
+            } finally {
+                // Release the connection.
+            }
 
-                    return 1;
-                }, finishedCounter);
+            return 1;
+        }, finishedCounter);
     }
 
     public void runSync1(final Configuration conf) {
@@ -424,39 +417,38 @@ public class HttpBench {
         final AtomicInteger counter = new AtomicInteger();
         final CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(cm).build();
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run(
-                (PerfConfig configuration, Integer index) -> {
-                    // Create a method instance.
-                    long startTime = System.currentTimeMillis();
-                    HttpGet method = new HttpGet(conf.httpURL);
-                    try {
-                        method.setHeader("Cookie", "zone=1;location=beijing");
-                        method.setHeader("Connection", "Keep-Alive");
-                        method.setHeader("X-Forwarded-For", "192.168.205.1");
-                        // Execute the method.
-                        CloseableHttpResponse response = httpclient.execute(method);
+        this.runSingle("Http Sync Perftest", conf, (configuration1, index1) -> {
+            // Create a method instance.
+            long startTime = System.currentTimeMillis();
+            HttpGet method = new HttpGet(conf.httpURL);
+            try {
+                method.setHeader("Cookie", "zone=1;location=beijing");
+                method.setHeader("Connection", "Keep-Alive");
+                method.setHeader("X-Forwarded-For", "192.168.205.1");
+                // Execute the method.
+                CloseableHttpResponse response = httpclient.execute(method);
 
-                        StatusLine statusLine = response.getStatusLine();
-                        if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
-                            log.error("Failed request: " + statusLine.getReasonPhrase());
-                        }
-                        parseResponse(EntityUtils.toString(response.getEntity()), conf);
-                        long spentTime = System.currentTimeMillis() - startTime;
-                        if (spentTime > conf.maxThreshold) {
-                            log.warn("long response time:" + spentTime);
-                        }
-                        int count = counter.getAndIncrement();
-                        if (count % conf.statCount == 0) {
-                            log.info("httpclient status:" + cm.getTotalStats());
-                        }
-                    } catch (Exception e) {
-                        log.error("Failed to request: " + conf.httpURL + ", " + e);
-                    } finally {
-                        // Release the connection.
-                        method.releaseConnection();
-                    }
-                    return 1;
-                });
+                StatusLine statusLine = response.getStatusLine();
+                if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
+                    log.error("Failed request: " + statusLine.getReasonPhrase());
+                }
+                parseResponse(EntityUtils.toString(response.getEntity()), conf);
+                long spentTime = System.currentTimeMillis() - startTime;
+                if (spentTime > conf.maxThreshold) {
+                    log.warn("long response time:" + spentTime);
+                }
+                int count = counter.getAndIncrement();
+                if (count % conf.statCount == 0) {
+                    log.info("httpclient status:" + cm.getTotalStats());
+                }
+            } catch (Exception e) {
+                log.error("Failed to request: " + conf.httpURL + ", " + e);
+            } finally {
+                // Release the connection.
+                method.releaseConnection();
+            }
+            return 1;
+        });
 
         try {
             httpclient.close();
@@ -466,30 +458,28 @@ public class HttpBench {
     }
 
     public void runSync2(final Configuration conf) {
+        this.runSingle("Http Sync Perftest", conf, (configuration1, index1) -> {
+            try {
+                long startTime = System.currentTimeMillis();
+                if (!conf.returnStream) {
+                    String content = TestHelper.getUri(3000, new URI(conf.httpURL));
+                    parseResponse(content, conf);
+                } else {
+                    parseResponse(TestHelper.getStream(3000, new URI(conf.httpURL)),
+                            conf);
+                }
+                long spentTime = System.currentTimeMillis() - startTime;
+                if (spentTime > conf.maxThreshold) {
+                    log.warn("long response time:" + spentTime);
+                }
+            } catch (Exception e) {
+                log.error("Failed to request: " + conf.httpURL + ", " + e);
+            } finally {
+                // Release the connection.
+            }
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run(
-                (PerfConfig configuration, Integer index) -> {
-                    try {
-                        long startTime = System.currentTimeMillis();
-                        if (!conf.returnStream) {
-                            String content = TestHelper.getUri(3000, new URI(conf.httpURL));
-                            parseResponse(content, conf);
-                        } else {
-                            parseResponse(TestHelper.getStream(3000, new URI(conf.httpURL)),
-                                    conf);
-                        }
-                        long spentTime = System.currentTimeMillis() - startTime;
-                        if (spentTime > conf.maxThreshold) {
-                            log.warn("long response time:" + spentTime);
-                        }
-                    } catch (Exception e) {
-                        log.error("Failed to request: " + conf.httpURL + ", " + e);
-                    } finally {
-                        // Release the connection.
-                    }
-
-                    return 1;
-                });
+            return 1;
+        });
     }
 
     public void runAsync1(final Configuration conf) throws Exception {
@@ -546,38 +536,37 @@ public class HttpBench {
             }
         };
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run(
-                (PerfConfig configuration, Integer index) -> {
-                    // Create a method instance.
-                    long startTime = System.currentTimeMillis();
-                    HttpGet method = new HttpGet(conf.httpURL);
-                    try {
-                        method.setHeader("Cookie", "zone=1;location=beijing");
-                        method.setHeader("Connection", "Keep-Alive");
-                        method.setHeader("X-Forwarded-For", "192.168.205.1");
-                        HttpResponse result = httpclient.execute(method, futureCallback).get();
-                        long spentTime = System.currentTimeMillis() - startTime;
-                        if (spentTime > conf.maxThreshold) {
-                            log.warn("long response time:" + spentTime);
-                        }
+        this.runSingle("Http Sync Perftest", conf, (configuration1, index1) -> {
+            // Create a method instance.
+            long startTime = System.currentTimeMillis();
+            HttpGet method = new HttpGet(conf.httpURL);
+            try {
+                method.setHeader("Cookie", "zone=1;location=beijing");
+                method.setHeader("Connection", "Keep-Alive");
+                method.setHeader("X-Forwarded-For", "192.168.205.1");
+                HttpResponse result = httpclient.execute(method, futureCallback).get();
+                long spentTime = System.currentTimeMillis() - startTime;
+                if (spentTime > conf.maxThreshold) {
+                    log.warn("long response time:" + spentTime);
+                }
 
-                        try {
-                            parseResponse(EntityUtils.toString(result.getEntity()), conf);
-                        } catch (Exception ex) {
+                try {
+                    parseResponse(EntityUtils.toString(result.getEntity()), conf);
+                } catch (Exception ex) {
 
-                        }
-                        // Read the response body.
-                        //byte[] responseBody = method.getResponseBody();
-                    } catch (Exception e) {
-                        log.error("Failed to request: " + conf.httpURL + ", " + e);
-                    } finally {
-                        // Release the connection.
-                        method.releaseConnection();
-                    }
+                }
+                // Read the response body.
+                //byte[] responseBody = method.getResponseBody();
+            } catch (Exception e) {
+                log.error("Failed to request: " + conf.httpURL + ", " + e);
+            } finally {
+                // Release the connection.
+                method.releaseConnection();
+            }
 
-                    return 1;
-                },
-                finishedCounter);
+            return 1;
+        }, finishedCounter);
+
         httpclient.close();
     }
 
@@ -665,162 +654,36 @@ public class HttpBench {
 
         final AtomicLong finishedCounter = new AtomicLong();
 
-        new PerfTester<PerfTester.SingleTask>("Http Sync Perftest", conf).run(
-                (PerfConfig configuration, Integer index) -> {
-                    // Create a method instance.
-                    HttpGet method = new HttpGet(conf.httpURL);
+        this.runSingle("Http Sync Perftest", conf, (configuration1, index1) -> {
+            // Create a method instance.
+            HttpGet method = new HttpGet(conf.httpURL);
 
-                    try {
-                        AsyncFutureCallback futureCallback = new AsyncFutureCallback(
-                                method, finishedCounter, conf);
-                        method.setHeader("Cookie", "zone=1;location=beijing");
-                        method.setHeader("Connection", "Keep-Alive");
-                        method.setHeader("X-Forwarded-For", "192.168.205.1");
-                        httpclient.execute(method, futureCallback);
-                        gettingCounter.incrementAndGet();
-                        while (gettingCounter.get() > 3000) {
-                            try {
-                                Thread.sleep(1);
-                            } catch (Exception ex) {
-                            }
-                        }
-                        // Read the response body.
-                        //byte[] responseBody = method.getResponseBody();
-                    } catch (Exception e) {
-                        log.error("Failed to request: " + conf.httpURL + ", " + e);
-                        method.releaseConnection();
-                    } finally {
-                        // Release the connection.
-                    }
-
-                    return 1;
-                }, finishedCounter);
-        httpclient.close();
-    }
-
-//    public void runSync3(final Configuration conf) throws Exception {
-//        NettyAsyncHttpProviderConfig providerConfig = new NettyAsyncHttpProviderConfig();
-//        providerConfig.addProperty(REUSE_ADDRESS, true);
-//        providerConfig.setDisableZeroCopy(false);
-//        AsyncHttpClientConfig config = new AsyncHttpClientConfig.
-//                Builder().setAllowPoolingConnection(true)
-//                .setConnectionTimeoutInMs(3000)
-//                .setMaxConnectionLifeTimeInMs(30000)
-//                .setIdleConnectionTimeoutInMs(30000)
-//                .setAsyncHttpClientProviderConfig(providerConfig)
-//                .setMaximumConnectionsPerHost(conf.asyncMaxPerRoute)
-//                .setMaximumConnectionsTotal(conf.asyncMaxTotal)
-//                        //.setIOThreadMultiplier(8)
-//                .build();
-//
-//
-//        AsyncHttpProvider httpProvider = new NettyAsyncHttpProvider(config);
-//
-//        final AsyncHttpClient asyncHttpClient = new AsyncHttpClient(httpProvider);
-//
-//        new PerfTester("Http Sync Perftest", conf, new PerfTester.Task() {
-//            @Override
-//            public int run(PerfConfig configuration, int index) {
-//                try {
-//                    long startTime = System.currentTimeMillis();
-//                    Response response = asyncHttpClient.prepareGet(conf.httpURL)
-//                            .setHeader("Connection", "Keep-Alive")
-//                            .execute().get();
-//                    try {
-//                        parseResponse(response.getResponseBody(), conf);
-//                    } catch (Exception ex) {
-//                        log.error("failed to pass ");
-//                    }
-//                    long spentTime = System.currentTimeMillis() - startTime;
-//                    if (spentTime > conf.maxThreshold) {
-//                        log.warn("long response time:" + spentTime);
-//                    }
-//                } catch (Exception e) {
-//                    log.error("Failed to request: " + conf.httpURL + ", " + e);
-//                } finally {
-//
-//                }
-//
-//                return 1;
-//            }
-//        }).run();
-//    }
-
-    private class AsyncHandler extends AsyncCompletionHandler<Response> {
-        AtomicLong finishedCounter;
-        long startTime;
-        int maxThreshold;
-        Configuration conf;
-
-        public AsyncHandler(AtomicLong finishedCounter, Configuration conf) {
-            this.finishedCounter = finishedCounter;
-            this.conf = conf;
-            startTime = System.currentTimeMillis();
-        }
-
-        @Override
-        public Response onCompleted(Response response) throws Exception {
             try {
-                parseResponse(response.getResponseBody(), this.conf);
-            } catch (Exception ex) {
-                log.error("failed to pass ");
+                AsyncFutureCallback futureCallback = new AsyncFutureCallback(
+                        method, finishedCounter, conf);
+                method.setHeader("Cookie", "zone=1;location=beijing");
+                method.setHeader("Connection", "Keep-Alive");
+                method.setHeader("X-Forwarded-For", "192.168.205.1");
+                httpclient.execute(method, futureCallback);
+                gettingCounter.incrementAndGet();
+                while (gettingCounter.get() > 3000) {
+                    try {
+                        Thread.sleep(1);
+                    } catch (Exception ex) {
+                    }
+                }
+                // Read the response body.
+                //byte[] responseBody = method.getResponseBody();
+            } catch (Exception e) {
+                log.error("Failed to request: " + conf.httpURL + ", " + e);
+                method.releaseConnection();
+            } finally {
+                // Release the connection.
             }
-            finishedCounter.incrementAndGet();
-            long spentTime = System.currentTimeMillis() - startTime;
-            if (spentTime > this.maxThreshold) {
-                log.warn("long response time:" + spentTime);
-            }
 
-            gettingCounter.decrementAndGet();
-            return response;
-        }
-    }
+            return 1;
+        }, finishedCounter);
 
-//    public void runAsync3(final Configuration conf) throws Exception {
-//        NettyAsyncHttpProviderConfig providerConfig = new NettyAsyncHttpProviderConfig();
-//        providerConfig.addProperty(REUSE_ADDRESS, true);
-//
-//        providerConfig.setDisableZeroCopy(false);
-//        AsyncHttpClientConfig config = new AsyncHttpClientConfig.
-//                Builder().setAllowPoolingConnection(true)
-//                .setConnectionTimeoutInMs(3000)
-//                .setMaxConnectionLifeTimeInMs(30000)
-//                .setIdleConnectionTimeoutInMs(30000)
-//                .setAsyncHttpClientProviderConfig(providerConfig)
-//                .setMaximumConnectionsPerHost(conf.asyncMaxPerRoute)
-//                .setMaximumConnectionsTotal(conf.asyncMaxTotal)
-//                .setIOThreadMultiplier(4)
-//                .build();
-//
-//        AsyncHttpProvider httpProvider = new NettyAsyncHttpProvider(config);
-//
-//        final AsyncHttpClient asyncHttpClient = new AsyncHttpClient(httpProvider);
-//        final AtomicLong finishedCounter = new AtomicLong();
-//        new PerfTester("Http Sync Perftest", conf, new PerfTester.Task() {
-//            @Override
-//            public int run(PerfConfig configuration, int index) {
-//                try {
-//                    asyncHttpClient.prepareGet(conf.httpURL)
-//                            .setHeader("Connection", "Keep-Alive")
-//                            .execute(new AsyncHandler(finishedCounter,
-//                                    conf));
-//                } catch (Exception e) {
-//                    log.error("Failed to request: " + conf.httpURL + ", " + e);
-//                } finally {
-//
-//                }
-//
-//                return 1;
-//            }
-//        }).run();
-//    }
-
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(HttpBench.class)
-                .setConfigClass(Configuration.class)
-                .setConfigFile("httpBench.yml")
-                .invoke();
+        httpclient.close();
     }
 }

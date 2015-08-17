@@ -3,9 +3,7 @@ package org.mds.harness2.tools.lang;
 import javolution.text.Cursor;
 import javolution.text.Text;
 import org.apache.commons.lang3.StringUtils;
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
-import org.mds.harness.common2.runner.RunnerHelper;
+import org.mds.harness.common2.runner.dsm.DsmRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,7 @@ import java.util.regex.Pattern;
 /**
  * @author Dongsong
  */
-public class TestRegex {
+public class TestRegex extends DsmRunner<TestRegexConfiguration> {
     private final static Logger log = LoggerFactory.getLogger(TestRegex.class);
     protected static String EXTALLOWCACHE_TAG = "#EXT-X-ALLOW-CACHE";
     private final static Pattern tagPattern1 = Pattern.compile("^#EXT-X-ALLOW-CACHE: *(?<allowCache>YES|NO) *$");
@@ -41,8 +39,7 @@ public class TestRegex {
     private final static Random random = new Random();
 
     public void runSetNull(TestRegexConfiguration configuration) {
-        PerfTester<PerfTester.SingleTask> perfTester = new PerfTester("Test Regex (set null)", configuration);
-        perfTester.run((PerfConfig conf, Integer index) -> {
+        this.runSingle("Test Regex (set null)", configuration, (configuration1, index1) -> {
             Matcher matcher = pattern.matcher("fdjl fdf<core:URI>(.*)</core:URI> fjdlll" + random.nextInt());
             matcher.matches();
             matcher.group(0);
@@ -52,8 +49,7 @@ public class TestRegex {
     }
 
     public void runUnsetNull(TestRegexConfiguration configuration) {
-        PerfTester<PerfTester.SingleTask> perfTester = new PerfTester("Test Regex (unset null)", configuration);
-        perfTester.run((config, index) -> {
+        this.runSingle("Test Regex (unset null)", configuration, (configuration1, index1) -> {
             pattern.matcher("fdjl fdf<core:URI>(.*)</core:URI> fjdlll" + random.nextInt()).matches();
             return 1;
         });
@@ -61,16 +57,14 @@ public class TestRegex {
 
     public void runReplaceAll(TestRegexConfiguration configuration) {
         final String url = "http://127.0.0.1:9090/linear/espn/test_";
-        PerfTester perfTester = new PerfTester("Test Replace All", configuration);
-        perfTester.run((config, index) -> {
+        this.runSingle("Test replace all", configuration, (configuration1, index) -> {
             (url + index + ".m3u8").replaceAll("((/|^))\\./", "$1");
             return 1;
         });
     }
 
     public void runTextStartWith(TestRegexConfiguration configuration) {
-        PerfTester perfTester = new PerfTester("Test Text startWith", configuration);
-        perfTester.run((config, index) -> {
+        this.runSingle("Test text startWith", configuration, (configuration1, index1) -> {
             new Text("#EXT-X-ALLOW-CACHE:YES").startsWith(EXTALLOWCACHE_TAG);
             new Text("#EXTM3U").startsWith(EXTALLOWCACHE_TAG);
             return 1;
@@ -78,8 +72,7 @@ public class TestRegex {
     }
 
     public void runStringStartWith(TestRegexConfiguration configuration) {
-        PerfTester perfTester = new PerfTester("Test String startWith", configuration);
-        perfTester.run((config, index) -> {
+        this.runSingle("Test String startWith", configuration, (configuration1, index1) -> {
             "#EXT-X-ALLOW-CACHE:YES".startsWith(EXTALLOWCACHE_TAG);
             "#EXTM3U".startsWith(EXTALLOWCACHE_TAG);
             return 1;
@@ -87,16 +80,15 @@ public class TestRegex {
     }
 
     public void runMatchPattern(TestRegexConfiguration configuration) {
-        new PerfTester("Test match Pattern", configuration)
-                .run((config, index) -> {
-                    tagPattern2.matcher("#EXT-X-ALLOW-CACHE:YES").matches();
-                    tagPattern2.matcher("#EXTM3U").matches();
-                    return 1;
-                });
+        this.runSingle("Test match pattern", configuration, (configuration1, index1) -> {
+            tagPattern2.matcher("#EXT-X-ALLOW-CACHE:YES").matches();
+            tagPattern2.matcher("#EXTM3U").matches();
+            return 1;
+        });
     }
 
     public void runRegexParse1(TestRegexConfiguration configuration) {
-        new PerfTester("Test regex parse1", configuration).run((config, index) -> {
+        this.runSingle("Test Regex parse1", configuration, (configuration1, index1) -> {
             try {
                 Matcher matcher = tagPattern1.matcher("#EXT-X-ALLOW-CACHE:YES");
                 matcher.matches();
@@ -109,14 +101,14 @@ public class TestRegex {
     }
 
     public void runStringParse1(TestRegexConfiguration configuration) {
-        new PerfTester("Test string parse1", configuration).run((config, index) -> {
+        this.runSingle("Test String parse1", configuration, (configuration1, index1) -> {
             StringUtils.substringAfter("#EXT-X-ALLOW-CACHE:YES", ":");
             return 1;
         });
     }
 
     public void runTextParse1(TestRegexConfiguration configuration) {
-        new PerfTester("Test text parse 1", configuration).run((config, index) -> {
+        this.runSingle("Test Text parse1", configuration, (configuration1, index1) -> {
             Text text = new Text("#EXT-X-ALLOW-CACHE:YES");
             text.subtext(text.indexOf(':') + 1);
             return 1;
@@ -124,7 +116,7 @@ public class TestRegex {
     }
 
     public void runRegexParse2(TestRegexConfiguration configuration) {
-        new PerfTester("Test regex parse 2", configuration).run((config, index) -> {
+        this.runSingle("Test Regex parse2", configuration, (configuration1, index1) -> {
             try {
                 Matcher matcher = PATTERN.matcher("#EXT:SignalID=9877,type=vod");
                 matcher.matches();
@@ -179,7 +171,7 @@ public class TestRegex {
     }
 
     public void runStringParse2(TestRegexConfiguration configuration) {
-        new PerfTester("Test String parse 2", configuration).run((config, index) -> {
+        this.runSingle("Test String parse2", configuration, (configuration1, index1) -> {
             getAttributeMap("#EXT:SignalID=9877,type=vod,Name=test");
             // Map<String, String> attributeMap = getAttributeMap("#EXT: SignalID=9877,type=vod,Name=test");
 //                if (attributeMap.get("SignalID") == null) {
@@ -195,7 +187,7 @@ public class TestRegex {
     }
 
     public void runTextParse2(TestRegexConfiguration configuration) {
-        new PerfTester("Test Text parse 2", configuration).run((config, index) -> {
+        this.runSingle("Test Text parse2", configuration, (configuration1, index1) -> {
             //                Map<String, String> attributeMap = getAttributeMap2("#EXT: SignalID=9877,type=vod,Name=test");
 //
 //                if (attributeMap.get("SignalID") == null) {
@@ -213,7 +205,7 @@ public class TestRegex {
     }
 
     public void runRegexParse3(TestRegexConfiguration configuration) {
-        new PerfTester("Test regex parse 3", configuration).run((config, index) -> {
+        this.runSingle("Test Regex parse3", configuration, (configuration1, index1) -> {
             try {
                 Matcher matcher = PATTERN2.matcher("#EXTINF: 6.000,jfld jfdkl");
                 matcher.matches();
@@ -228,21 +220,12 @@ public class TestRegex {
     }
 
     public void runStringParse3(TestRegexConfiguration configuration) {
-        new PerfTester("Test String parse 3", configuration).run((config, index) -> {
+        this.runSingle("Test String parse3", configuration, (configuration1, index1) -> {
             String attributes = StringUtils.substringAfter("#EXTINF: 6.000,jfld jfdkl", ":");
             String[] values = attributes.split(",");
             values[0].trim();
             values[1].trim();
             return 1;
         });
-    }
-
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(TestRegex.class)
-                .setConfigClass(TestRegexConfiguration.class)
-                .setConfigFile("testRegex.yml")
-                .invoke();
     }
 }

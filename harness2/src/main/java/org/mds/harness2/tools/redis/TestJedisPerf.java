@@ -1,19 +1,16 @@
 package org.mds.harness2.tools.redis;
 
 import org.apache.commons.lang3.StringUtils;
-import org.mds.harness.common2.perf.PerfConfig;
-import org.mds.harness.common2.perf.PerfTester;
-import org.mds.harness.common2.runner.RunnerHelper;
+import org.mds.harness.common2.runner.dsm.DsmRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.*;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
 
-public class TestJedisPerf {
+public class TestJedisPerf extends DsmRunner<JedisPerfConfiguration> {
     private final static Logger log = LoggerFactory.getLogger(TestJedisPerf.class);
 
     private static String KEY_PREFIX = "key-";
@@ -65,7 +62,7 @@ public class TestJedisPerf {
     }
 
     private void doJedisTest(final String actionName, final JedisPerfConfiguration conf, final JedisAction action) {
-        new PerfTester<PerfTester.SingleTask>("Jedis " + actionName, conf).run((configuration, index) -> {
+        this.runSingle(actionName, conf, (configuration1, index) -> {
             Jedis jedis = jedisPool.getResource();
             try {
                 action.act(jedis, index);
@@ -96,24 +93,22 @@ public class TestJedisPerf {
                                   final JedisPerfConfiguration conf,
                                   final DataMaker dataMaker,
                                   final JedisMListAction action) {
-        new PerfTester<PerfTester.BatchTask>("Jedis " + actionName, conf).run(
-                (configuration, indexes) -> {
-                    List<String> values = dataMaker.makeValues(indexes);
-                    Jedis jedis = jedisPool.getResource();
-                    try {
-                        action.act(jedis, values.toArray(new String[]{}));
-                    } catch (Exception ex) {
-                        log.error("Failed to rpush:", ex);
-                    } finally {
-                        jedisPool.returnResource(jedis);
-                    }
-                    return 1;
-                });
+        this.runBatch("Jedis " + actionName, conf, (configuration1, indexes) -> {
+            List<String> values = dataMaker.makeValues(indexes);
+            Jedis jedis = jedisPool.getResource();
+            try {
+                action.act(jedis, values.toArray(new String[]{}));
+            } catch (Exception ex) {
+                log.error("Failed to rpush:", ex);
+            } finally {
+                jedisPool.returnResource(jedis);
+            }
+            return 1;
+        });
     }
 
     private void doPipeTest(final String actionName, final JedisPerfConfiguration conf, final PipeAction action) {
-        new PerfTester<PerfTester.BatchTask>("Jedis " + actionName, conf).run(
-                (configuration, indexes) -> {
+        this.runBatch("Jedis " + actionName, conf, (configuration1, indexes) -> {
                     Jedis jedis = jedisPool.getResource();
                     try {
                         Pipeline pipeline = jedis.pipelined();
@@ -163,8 +158,7 @@ public class TestJedisPerf {
     }
 
     public void runHmset(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis hmset", conf).run(
-                (configuration, indexes) -> {
+        this.runBatch("Jedis HMSet", conf, (configuration1, indexes) -> {
                     Map<String, String> keysValues = new HashMap();
                     for (Long index : indexes) {
                         keysValues.put(KEY_PREFIX + index, DATA_PREFIX + index);
@@ -183,8 +177,7 @@ public class TestJedisPerf {
     }
 
     public void runPipeHmset(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis pipe hmset", conf).run(
-                (configuration, indexes) -> {
+        this.runBatch("Jedis pipe HMSet", conf, (configuration1, indexes) -> {
                     Jedis jedis = jedisPool.getResource();
 
                     try {
@@ -238,8 +231,7 @@ public class TestJedisPerf {
     }
 
     public void runPipeLmset(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis pipe hmset", conf).run(
-                (configuration, indexes) -> {
+        this.runBatch("Jedis pipe lmset", conf, (configuration1, indexes) -> {
                     Jedis jedis = jedisPool.getResource();
                     try {
                         Pipeline pipeline = jedis.pipelined();
@@ -273,8 +265,7 @@ public class TestJedisPerf {
     }
 
     public void runMset(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis mset", conf).run(
-                (configuration, indexes) -> {
+        this.runBatch("Jedis mset", conf, (configuration1, indexes) -> {
                     List<String> keysValues = new ArrayList<String>();
                     for (Long index : indexes) {
                         keysValues.add(KEY_PREFIX + index);
@@ -294,8 +285,7 @@ public class TestJedisPerf {
     }
 
     public void runPipeMset(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis pipe mset", conf).run(
-                (configuration, indexes) -> {
+        this.runBatch("Jedis pipe mset", conf, (configuration1, indexes) -> {
 
                     Jedis jedis = jedisPool.getResource();
 
@@ -349,7 +339,7 @@ public class TestJedisPerf {
     }
 
     public void runPipeMget(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis pipe mget", conf).run((config, indexes) -> {
+        this.runBatch("Jedis pipe mget", conf, (configuration1, indexes) -> {
             Jedis jedis = jedisPool.getResource();
 
             try {
@@ -401,7 +391,7 @@ public class TestJedisPerf {
     }
 
     public void runPipeHmget(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis pipe hmget", conf).run((config, indexes) -> {
+        this.runBatch("Jedis pipe hmget", conf, (configuration1, indexes) -> {
             Jedis jedis = jedisPool.getResource();
 
             try {
@@ -435,7 +425,7 @@ public class TestJedisPerf {
     }
 
     public void runPipeLmget(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis pipe lmget", conf).run((config, indexes) -> {
+        this.runBatch("Jedis pipe lmget", conf, (configuration1, indexes) -> {
             Jedis jedis = jedisPool.getResource();
 
             try {
@@ -468,7 +458,7 @@ public class TestJedisPerf {
     }
 
     public void runLmget(final JedisPerfConfiguration conf) {
-        new PerfTester<PerfTester.BatchTask>("Jedis lmget", conf).run((config, indexes) -> {
+        this.runBatch("Jedis lmget", conf, (configuration1, indexes) -> {
             Jedis jedis = jedisPool.getResource();
             try {
                 jedis.lrange(LIST_KEY, indexes.get(0), indexes.get(indexes.size() - 1));
@@ -494,7 +484,7 @@ public class TestJedisPerf {
     }
 
     public void runIncr(final JedisPerfConfiguration conf) {
-        new PerfTester("Jedis increase", conf).run((config, index) -> {
+        this.runSingle("Jedis increase", conf, (configuration1, index) -> {
             Jedis jedis = jedisPool.getResource();
             try {
                 jedis.incr("test-inc");
@@ -517,14 +507,5 @@ public class TestJedisPerf {
         doPipeTest("pipePublish", conf, (Pipeline pipeline, long index) -> {
             pipeline.publish(TOPIC, DATA_PREFIX + index);
         });
-    }
-
-    public static void main(String args[]) throws Exception {
-        RunnerHelper.newInvoker()
-                .setArgs(args)
-                .setMainClass(TestJedisPerf.class)
-                .setConfigFile("redis-perf.yml")
-                .setConfigClass(JedisPerfConfiguration.class)
-                .invoke();
     }
 }

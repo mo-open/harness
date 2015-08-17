@@ -1,11 +1,11 @@
 package org.mds.harness2.tools.mongo;
 
-import org.mds.harness.common2.perf.PerfConfig;
+import org.mds.harness.common2.runner.dsm.DsmRunnerConfig;
 
 /**
  * @author Dongsong
  */
-public class Configuration extends PerfConfig {
+public class Configuration extends DsmRunnerConfig {
 
     public String replicaSet = null;
 

@@ -1,7 +1,5 @@
 package org.mds.harness.common2.config;
 
-import org.mds.harness.common2.perf.PerfConfig;
-
 /**
  * Created by modoso on 15/4/23.
  */

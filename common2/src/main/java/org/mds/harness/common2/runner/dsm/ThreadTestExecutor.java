@@ -1,4 +1,4 @@
-package org.mds.harness.common2.perf;
+package org.mds.harness.common2.runner.dsm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,19 +18,19 @@ import java.util.concurrent.locks.LockSupport;
 public class ThreadTestExecutor extends TestExecutor {
     protected final static Logger log = LoggerFactory.getLogger(ThreadTestExecutor.class);
 
-    protected ThreadTestExecutor(PerfConfig configuration,
+    protected ThreadTestExecutor(DsmRunnerConfig configuration,
                                  AtomicLong iCounter,
                                  int batchSize) {
         super(configuration, iCounter, batchSize);
     }
 
     @Override
-    public void run(PerfTester.Task task) {
+    public void run(DsmRunner.Task task) {
         final ExecutorService executorService = Executors.newFixedThreadPool(configuration.threadCount);
 
         final List<Future> tasks = new ArrayList<Future>();
         final boolean useExternalCounter = iCounter != null;
-        final boolean isBatchTask = (task instanceof PerfTester.BatchTask) && batchSize > 0;
+        final boolean isBatchTask = (task instanceof DsmRunner.BatchTask) && batchSize > 0;
         if (iCounter == null) {
             iCounter = new AtomicLong();
         }
@@ -54,7 +54,7 @@ public class ThreadTestExecutor extends TestExecutor {
                     tasks.add(executorService.submit(() -> {
                         int size = 0;
                         List<Long> indexes = null;
-                        if (task instanceof PerfTester.BatchTask) {
+                        if (task instanceof DsmRunner.BatchTask) {
                             indexes = new ArrayList();
                         } else
                             size = 1;
