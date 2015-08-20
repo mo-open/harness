@@ -25,7 +25,7 @@ function exe(){
       test_classpath="${test_classpath}:${libFile}"
    done
 
-   java -classpath ${test_classpath} ${JAVA_OPTS} org.mds.harness.common2.runner.jmh.JMHRunnerMain $*
+   java -classpath ${test_classpath} ${JAVA_OPTS} org.mds.harness.common2.runner.dsm.DsmRunnerMain $*
 }
 
 function main(){
