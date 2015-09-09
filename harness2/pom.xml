@@ -66,6 +66,10 @@
         </dependency>
 
         <dependency>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.mds</groupId>
             <artifactId>harness-common2</artifactId>
         </dependency>
