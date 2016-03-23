@@ -8,7 +8,7 @@ public class DsmRunnerMain {
         RunnerHelper.newInvoker()
                 .setArgs(args)
                 .setMainClassName(className)
-                .setJMH(true)
+                .setJMH(false)
                 .setMethodName("run").invoke();
     }
 }

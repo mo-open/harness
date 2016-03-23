@@ -66,7 +66,7 @@ public class ThreadTestExecutor extends TestExecutor {
                                         finishCounter.addAndGet(size);
                                     break;
                                 }
-                                if (isBatchTask) {
+                                if (isBatchTask && indexes.size() < configuration.batchSize) {
                                     indexes.add(index);
                                     continue;
                                 }
@@ -79,7 +79,7 @@ public class ThreadTestExecutor extends TestExecutor {
                                 } else {
                                     returnSize = task.run(configuration, (int) index);
                                 }
-                                if (!configuration.checkReturn) returnSize = batchSize;
+                                if (isBatchTask && !configuration.checkReturn) returnSize = batchSize;
                                 if (!useExternalCounter)
                                     finishCounter.addAndGet(returnSize);
                                 if (interval > 0) {
