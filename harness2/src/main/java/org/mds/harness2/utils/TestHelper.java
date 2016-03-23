@@ -83,17 +83,18 @@ public class TestHelper {
     }
 
     public static String getUri(int timeout, URI uri) throws MalformedURLException {
-        return getUri(timeout, uri, false, 0);
+        return getUri("GET", timeout, uri, true, 0, false);
     }
 
-    public static String getUri(int timeout, URI uri, boolean close, int closeTimes) throws MalformedURLException {
+    public static String getUri(String method, int timeout, URI uri,
+                                boolean close, int closeTimes, boolean parse) throws MalformedURLException {
         URL url = new URL(uri.toString());
         HttpURLConnection conn = null;
         BufferedReader in = null;
         try {
             conn = (HttpURLConnection) url.openConnection();
 
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod(method);
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setConnectTimeout(timeout);
@@ -103,10 +104,12 @@ public class TestHelper {
             StringBuffer content = new StringBuffer();
             if (conn.getResponseCode() == 200) {
                 InputStream inputStream = conn.getInputStream();
-                in = new BufferedReader(new InputStreamReader(inputStream));
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine).append("\r\n");
+                if (parse) {
+                    in = new BufferedReader(new InputStreamReader(inputStream));
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine).append("\r\n");
+                    }
                 }
 
                 inputStream.close();
@@ -139,13 +142,19 @@ public class TestHelper {
                 }
             }
             return content.toString();
-        } catch (IOException e) {
+        } catch (
+                IOException e
+                )
+
+        {
             log.error("Failed to get uri: " + uri + ", due to: " + e.getMessage(), e);
             if (conn != null) {
                 conn.disconnect();
             }
             return null;
-        } finally {
+        } finally
+
+        {
             if (in != null) {
                 try {
                     in.close();
@@ -156,6 +165,7 @@ public class TestHelper {
                 conn.disconnect();
             }
         }
+
     }
 
     public static String postUri(int timeout, String uri, String content) throws MalformedURLException {

@@ -17,6 +17,7 @@ public class Configuration extends DsmRunnerConfig {
     public int remapType = 0;
     public boolean parse = false;
     public boolean returnStream = false;
+    public String method = "GET";
     public int workerCount = 5;
     public int httpThreads = 5;
     public int bufferSize = 10000;
@@ -31,5 +32,5 @@ public class Configuration extends DsmRunnerConfig {
     public boolean noDelay = false;
     public boolean keepalive = true;
     public boolean disconnect = false;
-    public int closeTimes=1;
+    public int closeTimes = 1;
 }

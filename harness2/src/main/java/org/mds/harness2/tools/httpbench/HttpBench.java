@@ -468,10 +468,10 @@ public class HttpBench extends DsmRunner<Configuration> {
             try {
                 long startTime = System.currentTimeMillis();
                 if (!conf.returnStream) {
-                    String content = TestHelper.getUri(3000,
+                    String content = TestHelper.getUri(conf.method, 3000,
                             new URI(conf.httpURL),
                             conf.disconnect,
-                            conf.closeTimes);
+                            conf.closeTimes,conf.parse);
                     if (conf.parse)
                         parseResponse(content, conf);
                 } else {
@@ -494,20 +494,20 @@ public class HttpBench extends DsmRunner<Configuration> {
 
     public void runVertx(final Configuration conf) {
         Vertx vertx = Vertx.vertx(new VertxOptions()
-                        .setEventLoopPoolSize(128)
-                        .setWorkerPoolSize(256)
+                .setEventLoopPoolSize(128)
+                .setWorkerPoolSize(256)
         );
         HttpClient httpClient = vertx.createHttpClient(new HttpClientOptions()
-                        .setKeepAlive(true)
-                        .setMaxPoolSize(conf.poolSize)
-                        .setPipelining(conf.pipelining)
-                        .setReuseAddress(true)
-                        .setTcpNoDelay(conf.noDelay)
-                        .setKeepAlive(conf.keepalive)
+                .setKeepAlive(true)
+                .setMaxPoolSize(conf.poolSize)
+                .setPipelining(conf.pipelining)
+                .setReuseAddress(true)
+                .setTcpNoDelay(conf.noDelay)
+                .setKeepAlive(conf.keepalive)
         );
         final AtomicLong finishedCounter = new AtomicLong();
         this.runSingle("test vertx httpclient", conf, (configuration, index) -> {
-            if(index % 100==0) {
+            if (index % 100 == 0) {
                 Thread.sleep(1);
             }
             for (int i = 0; i < conf.pipeCount; i++)
