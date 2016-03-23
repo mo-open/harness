@@ -66,10 +66,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.xerial.snappy</groupId>
-            <artifactId>snappy-java</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.mds</groupId>
             <artifactId>harness-common2</artifactId>
         </dependency>
@@ -80,6 +76,10 @@
         <dependency>
             <groupId>org.mds</groupId>
             <artifactId>hls-lib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>

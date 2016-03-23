@@ -83,6 +83,10 @@ public class TestHelper {
     }
 
     public static String getUri(int timeout, URI uri) throws MalformedURLException {
+        return getUri(timeout, uri, false, 0);
+    }
+
+    public static String getUri(int timeout, URI uri, boolean close, int closeTimes) throws MalformedURLException {
         URL url = new URL(uri.toString());
         HttpURLConnection conn = null;
         BufferedReader in = null;
@@ -95,13 +99,43 @@ public class TestHelper {
             conn.setConnectTimeout(timeout);
             conn.setReadTimeout(timeout);
             conn.setRequestProperty("Connection", "Keep-Alive");
-            InputStream inputStream = conn.getInputStream();
+
             StringBuffer content = new StringBuffer();
             if (conn.getResponseCode() == 200) {
+                InputStream inputStream = conn.getInputStream();
                 in = new BufferedReader(new InputStreamReader(inputStream));
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     content.append(inputLine).append("\r\n");
+                }
+
+                inputStream.close();
+
+                for (int i = 0; i < closeTimes; i++) {
+                    try {
+                        InputStream is = conn.getInputStream();
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (Exception ex) {
+
+                    }
+                    try {
+                        InputStream is = conn.getErrorStream();
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (Exception ex) {
+
+                    }
+                    try {
+                        OutputStream os = conn.getOutputStream();
+                        if (os != null) {
+                            os.close();
+                        }
+                    } catch (Exception ex) {
+
+                    }
                 }
             }
             return content.toString();
@@ -117,6 +151,9 @@ public class TestHelper {
                     in.close();
                 } catch (IOException e) {
                 }
+            }
+            if (conn != null && close) {
+                conn.disconnect();
             }
         }
     }

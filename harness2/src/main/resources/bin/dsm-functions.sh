@@ -3,46 +3,46 @@ function runGrizzlememcached(){
    exe org.mds.harness2.tools.memcached.TestGrizzlyMemcachedPerf -df testMemcached.yml
 }
 
-function runHttpClient(){
+function runHttpClientPerf(){
    exe org.mds.harness2.tools.httpbench.HttpBench -df httpBench.yml
 }
 
-function runHttpClient(){
+function runMapDBPerf(){
    exe org.mds.harness2.tools.mapdb.TestMapDBPerf -df testMapDB.yml
 }
 
-function runHttpClient(){
+function runMemcachedPerf(){
    exe org.mds.harness2.tools.memcached.TestMemcachedPerf -df testMemcached.yml
 }
 
-function runHttpClient(){
+function runNativeDriverPerf(){
    exe org.mds.harness2.tools.mongo.NativeDriverTest -df testMongo.yml
 }
 
-function runHttpClient(){
+function runSpringDataPerf(){
    exe org.mds.harness2.tools.mongo.SpringDataTest -df testMongo.yml
 }
 
-function runHttpClient(){
+function runProcessorPerf(){
    exe org.mds.harness2.tools.processor.ProcessorPerf -df processor.yml
 }
 
-function runHttpClient(){
+function runReactorPerf(){
    exe org.mds.harness2.tools.reactor.ReactorPerf -df reactor.yml
 }
 
-function runHttpClient(){
+function runJedisPerf(){
    exe org.mds.harness2.tools.redis.TestJedisPerf -df redis-perf.yml
 }
 
-function runHttpClient(){
+function runReflectPerf(){
    exe org.mds.harness2.tools.lang.TestReflect -df system.yml
 }
 
-function runHttpClient(){
+function runRegexPerf(){
    exe org.mds.harness2.tools.lang.TestRegex -df testRegex.yml
 }
 
-function runHttpClient(){
+function runXmemcachedPerf(){
    exe org.mds.harness2.tools.memcached.TestXMemcachedPerf -df testMemcached.yml
 }

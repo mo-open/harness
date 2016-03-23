@@ -21,7 +21,7 @@ function exe(){
       test_classpath="${test_classpath}:${libFile}"
    done
 
-   java -classpath ${test_classpath} ${JAVA_OPTS} ${MAIN_CLASS} $* ${ARGS}
+   java -classpath ${test_classpath} ${JAVA_OPTS} ${MAIN_CLASS} $* ${ARGS[*]}
 }
 
 function main(){
@@ -29,6 +29,8 @@ function main(){
    local allTargets=`declare -F|egrep "run.*"|sed 's/.* //g'|sed 's/run//g'`
    local allTargetArr=(${allTargets})
    local allTargetStr=`echo "|${allTargets[*]}|" | sed 's/ /|/g'`
+   run${TARGET}
+   ##todo:
    if [[ "${allTargetStr}" =~ "|${TARGET}|" ]]; then
       run${TARGET}
       return 0
@@ -43,4 +45,10 @@ function main(){
          done
          ;;
    esac
+}
+
+function showTargets(){
+   local functionDefs=$1
+
+   declare -F
 }
