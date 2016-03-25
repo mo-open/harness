@@ -104,6 +104,7 @@ public class TestHelper {
             StringBuffer content = new StringBuffer();
             if (conn.getResponseCode() == 200) {
                 InputStream inputStream = conn.getInputStream();
+
                 if (parse) {
                     in = new BufferedReader(new InputStreamReader(inputStream));
                     String inputLine;
