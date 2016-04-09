@@ -43,6 +43,7 @@ public class ThroughputCalculator {
             } else
                 noChanges = 0;
             if (noChanges > 3) {
+                log.info("No throughput, exit.");
                 return;
             }
             if (configuration.output == 0)

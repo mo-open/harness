@@ -61,7 +61,7 @@ public class TestMeetupClientPerf extends DsmRunner<TestMemcachedConfiguration> 
             for (Long index : indexes) {
                 keys.add(KEY_PREFIX + index);
             }
-            memcachedClient.getMultiArray(keys.toArray(new String[]{}));
+            memcachedClient.getMultiArray(keys.toArray(new String[keys.size()]));
             return 1;
         });
     }

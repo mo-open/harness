@@ -9,7 +9,6 @@ import redis.clients.jedis.*;
 import java.io.IOException;
 import java.util.*;
 
-
 public class TestJedisPerf extends DsmRunner<JedisPerfConfiguration> {
     private final static Logger log = LoggerFactory.getLogger(TestJedisPerf.class);
 

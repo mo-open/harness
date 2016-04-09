@@ -83,42 +83,90 @@ public class TestHelper {
     }
 
     public static String getUri(int timeout, URI uri) throws MalformedURLException {
+        return getUri("GET", timeout, uri, true, 0, false);
+    }
+
+    public static String getUri(String method, int timeout, URI uri,
+                                boolean close, int closeTimes, boolean parse) throws MalformedURLException {
         URL url = new URL(uri.toString());
         HttpURLConnection conn = null;
         BufferedReader in = null;
         try {
             conn = (HttpURLConnection) url.openConnection();
 
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod(method);
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setConnectTimeout(timeout);
             conn.setReadTimeout(timeout);
             conn.setRequestProperty("Connection", "Keep-Alive");
-            InputStream inputStream = conn.getInputStream();
+
             StringBuffer content = new StringBuffer();
             if (conn.getResponseCode() == 200) {
-                in = new BufferedReader(new InputStreamReader(inputStream));
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine).append("\r\n");
+                InputStream inputStream = conn.getInputStream();
+
+                if (parse) {
+                    in = new BufferedReader(new InputStreamReader(inputStream));
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine).append("\r\n");
+                    }
+                }
+
+                inputStream.close();
+
+                for (int i = 0; i < closeTimes; i++) {
+                    try {
+                        InputStream is = conn.getInputStream();
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (Exception ex) {
+
+                    }
+                    try {
+                        InputStream is = conn.getErrorStream();
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (Exception ex) {
+
+                    }
+                    try {
+                        OutputStream os = conn.getOutputStream();
+                        if (os != null) {
+                            os.close();
+                        }
+                    } catch (Exception ex) {
+
+                    }
                 }
             }
             return content.toString();
-        } catch (IOException e) {
+        } catch (
+                IOException e
+                )
+
+        {
             log.error("Failed to get uri: " + uri + ", due to: " + e.getMessage(), e);
             if (conn != null) {
                 conn.disconnect();
             }
             return null;
-        } finally {
+        } finally
+
+        {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
                 }
             }
+            if (conn != null && close) {
+                conn.disconnect();
+            }
         }
+
     }
 
     public static String postUri(int timeout, String uri, String content) throws MalformedURLException {

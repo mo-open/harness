@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.swp
 *.ipr
 *.iml
@@ -22,3 +23,13 @@ checkpoint
 derby.log
 dist/
 .java-version
+=======
+**/.idea
+*.iml
+*target*
+*.log
+*.class
+.idea
+.gitignore
+**/*.iml
+>>>>>>> bc43e29a4a7a81c3f1f886590f3f218a5315d3fe

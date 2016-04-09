@@ -13,7 +13,7 @@ asyncMaxPerRoute: 1000
 runs: sync2
 
 remapType: 0
-parse: true
+parse: false
 returnStream: false
 workerCount: 5
 
@@ -22,3 +22,9 @@ remapThreads: 2
 peakDuration: 1000
 commonDuration: 100000
 consumerTime: 10
+
+poolSize: 5
+pipelining: false
+noDelay: false
+keepalive: true
+disconnect: false

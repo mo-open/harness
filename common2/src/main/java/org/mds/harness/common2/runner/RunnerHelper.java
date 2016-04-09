@@ -158,7 +158,8 @@ public class RunnerHelper {
                 return;
             }
 
-            Object configuration = ConfigurationHelper.loadConfiguration(invoker.args, invoker.mainClass, invoker.configClass, invoker.configFile);
+            Object configuration = ConfigurationHelper.loadConfiguration(invoker.args, invoker.mainClass,
+                    invoker.configClass, invoker.configFile);
             log.info(String.format("Start,Arguments:" + ConfigurationHelper.argumentsString(configuration)));
 
             String methodSuffixes = "";

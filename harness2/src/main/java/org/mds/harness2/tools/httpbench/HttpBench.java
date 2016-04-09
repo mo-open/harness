@@ -2,6 +2,10 @@ package org.mds.harness2.tools.httpbench;
 
 import com.ning.http.client.*;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import org.mds.harness.common2.runner.dsm.DsmRunner;
 import org.mds.hprocessor.processor.*;
 import org.mds.video.hls.model.M3uPlayList;
@@ -432,7 +436,8 @@ public class HttpBench extends DsmRunner<Configuration> {
                 if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
                     log.error("Failed request: " + statusLine.getReasonPhrase());
                 }
-                parseResponse(EntityUtils.toString(response.getEntity()), conf);
+                if (conf.parse)
+                    parseResponse(EntityUtils.toString(response.getEntity()), conf);
                 long spentTime = System.currentTimeMillis() - startTime;
                 if (spentTime > conf.maxThreshold) {
                     log.warn("long response time:" + spentTime);
@@ -458,12 +463,17 @@ public class HttpBench extends DsmRunner<Configuration> {
     }
 
     public void runSync2(final Configuration conf) {
+        System.setProperty("http.maxConnections", "" + conf.poolSize);
         this.runSingle("Http Sync Perftest", conf, (configuration1, index1) -> {
             try {
                 long startTime = System.currentTimeMillis();
                 if (!conf.returnStream) {
-                    String content = TestHelper.getUri(3000, new URI(conf.httpURL));
-                    parseResponse(content, conf);
+                    String content = TestHelper.getUri(conf.method, 3000,
+                            new URI(conf.httpURL),
+                            conf.disconnect,
+                            conf.closeTimes,conf.parse);
+                    if (conf.parse)
+                        parseResponse(content, conf);
                 } else {
                     parseResponse(TestHelper.getStream(3000, new URI(conf.httpURL)),
                             conf);
@@ -480,6 +490,36 @@ public class HttpBench extends DsmRunner<Configuration> {
 
             return 1;
         });
+    }
+
+    public void runVertx(final Configuration conf) {
+        Vertx vertx = Vertx.vertx(new VertxOptions()
+                .setEventLoopPoolSize(128)
+                .setWorkerPoolSize(256)
+        );
+        HttpClient httpClient = vertx.createHttpClient(new HttpClientOptions()
+                .setKeepAlive(true)
+                .setMaxPoolSize(conf.poolSize)
+                .setPipelining(conf.pipelining)
+                .setReuseAddress(true)
+                .setTcpNoDelay(conf.noDelay)
+                .setKeepAlive(conf.keepalive)
+        );
+        final AtomicLong finishedCounter = new AtomicLong();
+        this.runSingle("test vertx httpclient", conf, (configuration, index) -> {
+            if (index % 100 == 0) {
+                Thread.sleep(1);
+            }
+            for (int i = 0; i < conf.pipeCount; i++)
+                httpClient.getAbs(conf.httpURL).handler(httpClientResponse -> {
+                    finishedCounter.incrementAndGet();
+                }).exceptionHandler(throwable -> {
+                    log.info("Http Request failed: " + throwable);
+                    finishedCounter.incrementAndGet();
+                }).end();
+
+            return conf.pipeCount;
+        }, finishedCounter);
     }
 
     public void runAsync1(final Configuration conf) throws Exception {
