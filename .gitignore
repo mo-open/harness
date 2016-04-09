@@ -1,9 +1,7 @@
-*~
-*.#*
-*#*#
 *.swp
 *.ipr
 *.iml
+*/*.iml
 *.iws
 *.pyc
 .idea/
@@ -23,4 +21,4 @@ log/
 checkpoint
 derby.log
 dist/
-
+.java-version
